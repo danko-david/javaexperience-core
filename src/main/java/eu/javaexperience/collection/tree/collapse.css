@@ -1,0 +1,93 @@
+<style>
+	/* http://cssdeck.com/labs/pure-css3-expand-collapse */
+	ul { list-style-type: none; }
+	label{
+		background-color: #AAAFAB;
+		border-radius: 5px;
+		padding: 3px;
+		padding-left: 25px;
+		color: white;	
+	}
+	li { 
+		margin: 10px;
+		padding: 5px;
+		border: 1px solid #ABC;
+		border-radius: 5px;
+	}
+	input[type=checkbox] { display: none; }
+	input[type=checkbox] ~ ul {
+		display: none;
+		opacity: 0;
+		overflow: hidden;
+		white-space:nowrap;
+		visibility: hidden;
+	   -webkit-transition:all .5s ease;  
+	   -moz-transition:all .5s ease;  
+	   -o-transition:all .5s ease;  
+	   transition:all .5s ease;
+	
+	}
+	input[type=checkbox]:checked ~ ul { 
+		visibility: visible;
+		
+		display: block;
+		opacity: 1;
+		transition: max-height 0.15s ease-out;
+	-webkit-transition:all .5s ease;  
+	   -moz-transition:all .5s ease;  
+	   -o-transition:all .5s ease;  
+	   transition:all .5s ease;
+	}
+	input[type=checkbox] + label:not(.leaf):before{
+		transform-origin:25% 50%;
+	  border: 8px solid transparent;
+	  border-width: 8px 12px;	
+	  border-left-color: white;
+	  margin-left: -20px;
+		width: 0;
+		height: 0;
+		display: inline-block;
+		text-align: center;
+		content: '';
+		color: #AAAFAB;
+	   -webkit-transition:all .5s ease;  
+	   -moz-transition:all .5s ease;  
+	   -o-transition:all .5s ease;  
+	   transition:all .5s ease; 
+		position: absolute;
+		margin-top: 1px;
+	}
+	input[type=checkbox]:checked + label:before {
+		transform: rotate(90deg);
+		/*margin-top: 6px;
+	  margin-left: -25px;*/
+	}
+</style>
+
+<button id="collapse_all">Mind kinyitása</button><br/><br/>
+<button id="uncollapse_all">Mind bezárása</button><br/><br/>
+
+<script type="text/javascript">
+	window.forceAttr = function(attr, value)
+	{
+		return function(elem)
+		{
+			elem[attr] = value;
+		}
+	}
+
+	window.doDomEach = function(sel, func)
+	{
+		return function()
+		{
+			var arr = document.querySelectorAll(sel);
+			for(var i=0;i<arr.length;++i)
+			{
+				func(arr[i], i);
+			}
+		}
+	}
+	
+	document.querySelector("#collapse_all").onclick = doDomEach("input[type=checkbox]", forceAttr("checked", "checked"));
+	document.querySelector("#uncollapse_all").onclick = doDomEach("input[type=checkbox]", forceAttr("checked", ""));
+</script>
