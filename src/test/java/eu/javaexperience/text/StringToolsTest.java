@@ -462,4 +462,13 @@ public class StringToolsTest
 		assertEquals("", tryTrim(" "));
 		assertEquals("asdf", tryTrim(" \n asdf "));
 	}
+	
+	@Test
+	public void testPassOnlyNumbersAndSmallAscii()
+	{
+		assertEquals("012345avfreda", StringTools.passOnlyNumbersAndSmallAscii("012345avfreda"));
+		assertEquals("012345avfreda", StringTools.passOnlyNumbersAndSmallAscii("012345-av fr!eda"));
+		assertEquals("", StringTools.passOnlyNumbersAndSmallAscii("@&!"));
+	}
+	
 }
