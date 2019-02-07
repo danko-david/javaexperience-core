@@ -1109,6 +1109,7 @@ public class Mirror
 		return false;
 	}
 	
+	@Deprecated
 	public static void throwSoftOrHardButAnyway(Throwable t)
 	{
 		propagateAnyway(t);
