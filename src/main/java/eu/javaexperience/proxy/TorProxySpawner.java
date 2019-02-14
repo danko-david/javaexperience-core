@@ -11,7 +11,6 @@ import eu.javaexperience.asserts.AssertArgument;
 import eu.javaexperience.io.IOTools;
 import eu.javaexperience.reflect.Mirror;
 import eu.javaexperience.text.StringTools;
-import eu.javaexperience.text.Format.strtotime;
 
 public class TorProxySpawner
 {

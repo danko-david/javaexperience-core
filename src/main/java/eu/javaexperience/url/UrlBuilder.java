@@ -236,6 +236,16 @@ public class UrlBuilder implements Cloneable
 		this.params = params;
 		return this;
 	}
+	
+	public String getParameter(String name)
+	{
+		String[] arr = params.get(name);
+		if(null != arr && arr.length > 0)
+		{
+			return arr[0];
+		}
+		return null;
+	}
 
 	public String getHost()
 	{

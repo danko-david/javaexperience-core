@@ -4,7 +4,7 @@
 
   <groupId>javaexperience</groupId>
   <artifactId>core</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <packaging>jar</packaging>
 
   <name>core</name>
@@ -37,12 +37,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.6</version>
-		</dependency>
-	
-		<dependency>
-			<groupId>javaexperience</groupId>
-			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	
