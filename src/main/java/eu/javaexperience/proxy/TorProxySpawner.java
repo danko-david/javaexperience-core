@@ -1,5 +1,6 @@
 package eu.javaexperience.proxy;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -181,9 +182,10 @@ public class TorProxySpawner
 			process = exec(false, "tor", "-f", root+"/cfg"+offset);
 		}
 		
-		public void stop()
+		public void stop() throws InterruptedException
 		{
 			process.destroy();
+			process.waitFor();
 			process = null;
 		}
 		

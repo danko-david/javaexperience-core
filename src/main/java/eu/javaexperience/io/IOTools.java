@@ -23,6 +23,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 
@@ -292,7 +294,7 @@ public class IOTools
 		{
 			is.close();
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{}
 	}
 	
@@ -825,6 +827,69 @@ public class IOTools
 		{
 			IOTools.copyStream(gin, os);
 			os.flush();
+		}
+	}
+	
+	protected static Set<Closeable> CLOSE_ON_EXIT = new HashSet<>();
+	
+	static
+	{
+		Runtime.getRuntime().addShutdownHook
+		(
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					Closeable[] close;
+					synchronized(CLOSE_ON_EXIT)
+					{
+						close = CLOSE_ON_EXIT.toArray(new Closeable[0]);
+					}
+					
+					for(Closeable c:close)
+					{
+						silentClose(c);
+					}
+				}
+			}
+		);
+	}
+	
+	public static void closeOnExit(Closeable close)
+	{
+		if(null == close)
+		{
+			return;
+		}
+		synchronized(CLOSE_ON_EXIT)
+		{
+			CLOSE_ON_EXIT.add(close);
+		}
+	}
+	
+	public static void revokeCloseOnExit(Closeable close)
+	{
+		if(null == close)
+		{
+			return;
+		}
+		synchronized(CLOSE_ON_EXIT)
+		{
+			CLOSE_ON_EXIT.remove(close);
+		}
+	}
+	
+	public static boolean isCloseOnExit(Closeable close)
+	{
+		if(null == close)
+		{
+			return false;
+		}
+		
+		synchronized(CLOSE_ON_EXIT)
+		{
+			return CLOSE_ON_EXIT.contains(close);
 		}
 	}
 }
