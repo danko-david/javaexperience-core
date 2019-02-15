@@ -53,6 +53,7 @@ public class TorSpawnerStorage implements ProxyStorage, Closeable
 				try
 				{
 					tp.withinTimeOrRestart(maxIdle);
+					tp.updateAccessTimeNow();
 				}
 				catch (InterruptedException e)
 				{
