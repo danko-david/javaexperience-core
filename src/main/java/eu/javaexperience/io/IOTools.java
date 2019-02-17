@@ -830,30 +830,33 @@ public class IOTools
 		}
 	}
 	
-	protected static Set<Closeable> CLOSE_ON_EXIT = new HashSet<>();
-	
-	static
+	protected static final class IoToolsShutdownAutoClose
 	{
-		Runtime.getRuntime().addShutdownHook
-		(
-			new Thread()
-			{
-				@Override
-				public void run()
+		protected static Set<Closeable> CLOSE_ON_EXIT = new HashSet<>();
+		
+		static
+		{
+			Runtime.getRuntime().addShutdownHook
+			(
+				new Thread()
 				{
-					Closeable[] close;
-					synchronized(CLOSE_ON_EXIT)
+					@Override
+					public void run()
 					{
-						close = CLOSE_ON_EXIT.toArray(new Closeable[0]);
-					}
-					
-					for(Closeable c:close)
-					{
-						silentClose(c);
+						Closeable[] close;
+						synchronized(CLOSE_ON_EXIT)
+						{
+							close = CLOSE_ON_EXIT.toArray(new Closeable[0]);
+						}
+						
+						for(Closeable c:close)
+						{
+							silentClose(c);
+						}
 					}
 				}
-			}
-		);
+			);
+		}
 	}
 	
 	public static void closeOnExit(Closeable close)
@@ -862,9 +865,10 @@ public class IOTools
 		{
 			return;
 		}
-		synchronized(CLOSE_ON_EXIT)
+		
+		synchronized(IoToolsShutdownAutoClose.CLOSE_ON_EXIT)
 		{
-			CLOSE_ON_EXIT.add(close);
+			IoToolsShutdownAutoClose.CLOSE_ON_EXIT.add(close);
 		}
 	}
 	
@@ -874,9 +878,10 @@ public class IOTools
 		{
 			return;
 		}
-		synchronized(CLOSE_ON_EXIT)
+		
+		synchronized(IoToolsShutdownAutoClose.CLOSE_ON_EXIT)
 		{
-			CLOSE_ON_EXIT.remove(close);
+			IoToolsShutdownAutoClose.CLOSE_ON_EXIT.remove(close);
 		}
 	}
 	
@@ -887,9 +892,9 @@ public class IOTools
 			return false;
 		}
 		
-		synchronized(CLOSE_ON_EXIT)
+		synchronized(IoToolsShutdownAutoClose.CLOSE_ON_EXIT)
 		{
-			return CLOSE_ON_EXIT.contains(close);
+			return IoToolsShutdownAutoClose.CLOSE_ON_EXIT.contains(close);
 		}
 	}
 }
