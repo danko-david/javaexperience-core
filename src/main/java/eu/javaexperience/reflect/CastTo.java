@@ -1,6 +1,5 @@
 package eu.javaexperience.reflect;
 
-import eu.javaexperience.asserts.AssertArgument;
 import eu.javaexperience.interfaces.simple.getBy.GetBy1;
 import eu.javaexperience.text.Format.strtotime;
 
@@ -16,7 +15,6 @@ import eu.javaexperience.text.Format.strtotime;
  * 
  * String
  * 
- * TODO input Enum
  * Date
  * 
  * */
@@ -45,24 +43,20 @@ public enum CastTo implements NotatedCaster
 			}
 			catch(Exception e){}
 			
-			try
-			{
-				boolean tr = str.contains("true");
-				boolean fa = str.contains("false");
+			boolean tr = str.contains("true");
+			boolean fa = str.contains("false");
 
+			if(tr != fa)
+				return tr;
+			
+			if(str.length() < 2)
+			{
+				tr = str.contains("t");
+				fa = str.contains("f");
+			
 				if(tr != fa)
 					return tr;
-				
-				if(str.length() < 2)
-				{
-					tr = str.contains("t");
-					fa = str.contains("f");
-				
-					if(tr != fa)
-						return tr;
-				}
 			}
-			catch(Exception e){}
 			
 			return null;
 		}
@@ -438,6 +432,7 @@ public enum CastTo implements NotatedCaster
 			}
 			
 			java.lang.Object time = Long.cast(str);
+			
 			if(time instanceof Number)
 				return new java.util.Date(((Number) time).longValue());
 			

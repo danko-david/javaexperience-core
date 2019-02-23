@@ -54,20 +54,7 @@ public class CliTools
 		StringBuilder sb = new StringBuilder();
 		for(CliEntry<?> e:ent)
 		{
-			sb.append("\t");
-			int n = 0;
-			for(String o:e.getOptionNames())
-			{
-				if(++n > 1)
-				{
-					sb.append(", ");
-				}
-				sb.append("-");
-				sb.append(o);
-			}
-			
-			sb.append("\t\t");
-			sb.append(e.getDescription());
+			sb.append(e.toString());
 			sb.append("\n");
 		}
 		return sb.toString();
@@ -124,7 +111,7 @@ public class CliTools
 		return CLI_OPTIONS;
 	}
 	
-	public static Map<String, List<String>> getStoredCLiOptions()
+	public static Map<String, List<String>> getStoredCliOptions()
 	{
 		return CLI_OPTIONS;
 	}

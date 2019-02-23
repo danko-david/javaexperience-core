@@ -1,18 +1,15 @@
 package eu.javaexperience.collection;
 
 import java.lang.reflect.Array;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import eu.javaexperience.collection.map.KeyVal;
 import eu.javaexperience.collection.map.PublisherMap;
@@ -24,21 +21,6 @@ import eu.javaexperience.semantic.references.MayNull;
 
 public class CollectionTools
 {
-	public static <T> void mutualDeleteSection(Set<T> a, Set<T> b)
-	{
-		ArrayList<T> less = new ArrayList<>();
-
-		Collection<T> more = a.size()>b.size()?a:b;
-		less.addAll(a==more?b:a);
-		
-		for(T v:less)
-			if(more.contains(v))
-			{
-				a.remove(v);
-				b.remove(v);
-			}
-	}
-	
 	public static <T> boolean containsIdentical(Collection<T> coll, T elem)
 	{
 		for(T e:coll)
@@ -47,32 +29,6 @@ public class CollectionTools
 		
 		return false;
 	}
-	
-
-	
-	private static enum asd
-	{
-		asd,
-		fg,
-		fdg,
-		fgh,
-	}
-	
-	/*public static void main(String[] args)
-	{
-		EnumSet<asd> en = EnumSet.noneOf(asd.class);
-		en.add(asd.fgh);
-		en.add(asd.fg);
-		System.out.println(en);
-		
-		Number n = enumSetBits(asd.class, en);
-		System.out.println(n);
-		
-		EnumSet<asd> re = enumSetBits(asd.class, n);
-		
-		System.out.println(re);
-		
-	}*/
 
 	public static String toString(Collection<?> coll)
 	{
@@ -496,48 +452,8 @@ public class CollectionTools
 		return true;
 	}
 
-	public static void main(String[] args)
-	{
-		List<Integer> arr = Arrays.asList(0,1,2, 4);
-		System.out.println(arr);
-		while(nextPermutation(arr))
-		{
-			System.out.println(arr);
-		}
-	}
-
 	public static <T> ArrayList<T> inlineArrayList(T... elems)
 	{
 		return inlineAdd(new ArrayList<>(), elems);
 	}
-
-	/*public static <T> void indexOfExternalEquals
-	(
-		List<T> list,
-		T key,
-		GetBy2<Boolean, T,T> eq
-	)
-	{
-		for(int i=0;i<list.size();++i)
-		{
-			
-		}
-	}
-	
-	public static <T> void replaceExternalEquals
-	(
-		List<T> list,
-		T key,
-		GetBy2<Boolean, T,T> eq
-	)
-	{
-		for(T t:coll)
-		{
-			if(Boolean.TRUE == eq.getBy(key, t))
-			{
-				return true;
-			}
-		}
-		return false;
-	}*/
 }

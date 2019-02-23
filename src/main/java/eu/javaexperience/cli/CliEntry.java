@@ -12,7 +12,7 @@ import eu.javaexperience.interfaces.simple.getBy.GetBy2;
 
 public class CliEntry<T>
 {
-	protected ReadOnlyAndRwCollection<List<String>> opts = new ReadOnlyAndRwCollection<List<String>>(new ArrayList<String>(), (GetBy1)(Object)CollectionReadOnlyFunctions.MAKE_LIST_READ_ONLY);
+	protected ReadOnlyAndRwCollection<List<String>> opts = new ReadOnlyAndRwCollection<>(new ArrayList<>(), (GetBy1)(Object)CollectionReadOnlyFunctions.MAKE_LIST_READ_ONLY);
 	protected String description;
 	protected GetBy2<T, CliEntry<T>, Map<String, List<String>>> parser;
 	
@@ -65,7 +65,7 @@ public class CliEntry<T>
 		}
 		catch(Exception e)
 		{
-			throw new RuntimeException("Error on parsing CliEntry: "+this.toString());
+			throw new IllegalArgumentException("Error on parsing CliEntry: "+this.toString());
 		}
 	}
 	
@@ -80,10 +80,17 @@ public class CliEntry<T>
 		return def;
 	}
 	
-	/*public T tryParseStrictOrDefault(Map<String, List<String>> from, T def)
+	public boolean hasOption(Map<String, List<String>> from)
 	{
-		
-	}*/
+		for(String name: getOptionNames())
+		{
+			if(from.containsKey(name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public String getSimple(Map<String, List<String>> from)
 	{

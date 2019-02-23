@@ -2,6 +2,8 @@ package eu.javaexperience.reflect;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 import eu.javaexperience.time.TimeCalc;
@@ -85,6 +87,7 @@ public class CastToTest
 		short zero = 0;
 		short ten = 10;
 		assertEquals(null, CastTo.Short.cast(null));
+		assertEquals(null, CastTo.Short.cast("0.e"));
 		assertEquals(zero, CastTo.Short.cast("0.0"));
 		assertEquals(zero, CastTo.Short.cast(" 0.0 "));
 		assertEquals(zero, CastTo.Short.cast("0"));
@@ -101,6 +104,7 @@ public class CastToTest
 	public void testCastInteger()
 	{
 		assertEquals(null, CastTo.Int.cast(null));
+		assertEquals(null, CastTo.Int.cast("0.e"));
 		assertEquals(0, CastTo.Int.cast("0.0"));
 		assertEquals(0, CastTo.Int.cast("0"));
 		assertEquals(0, CastTo.Int.cast(" 0  "));
@@ -116,6 +120,7 @@ public class CastToTest
 	public void testCastLong()
 	{
 		assertEquals(null, CastTo.Long.cast(null));
+		assertEquals(null, CastTo.Long.cast("0.e"));
 		assertEquals(0l, CastTo.Long.cast("0.0"));
 		assertEquals(0l, CastTo.Long.cast("0"));
 		assertEquals(0l, CastTo.Long.cast(" 0  "));
@@ -131,6 +136,7 @@ public class CastToTest
 	public void testCastFloat()
 	{
 		assertEquals(null, CastTo.Float.cast(null));
+		assertEquals(null, CastTo.Float.cast("0.e"));
 		assertEquals(0.0f, CastTo.Float.cast("0.0"));
 		assertEquals(0f, CastTo.Float.cast("0"));
 		assertEquals(0f, CastTo.Float.cast(" 0  "));
@@ -146,6 +152,7 @@ public class CastToTest
 	public void testCastDouble()
 	{
 		assertEquals(null, CastTo.Double.cast(null));
+		assertEquals(null, CastTo.Double.cast("0.e"));
 		assertEquals(0.0, CastTo.Double.cast("0.0"));
 		assertEquals(0.0, CastTo.Double.cast("0"));
 		assertEquals(0.0, CastTo.Double.cast(" 0  "));
@@ -175,10 +182,21 @@ public class CastToTest
 	public void testCastDate()
 	{
 		assertEquals(null, CastTo.Date.cast(null));
+		Date d = new Date();
+		assertEquals(d, CastTo.Date.cast(d));
+		assertEquals(null , CastTo.Date.cast("safdg"));
 		assertEquals(TimeCalc.date(2015, 3, 14, 0, 0, 0, 0), CastTo.Date.cast("2015-03-14"));
 		assertEquals(TimeCalc.dateUtc(2012, 1, 14, 15, 15, 44, 0), CastTo.Date.cast(1326554144000l));
 		
 		assertEquals(TimeCalc.dateUtc(1970, 1, 1, 0, 0, 1, 24), CastTo.Date.cast(1024));
+	}
+	
+	@Test
+	public void testCastObject()
+	{
+		assertEquals(null, CastTo.Object.cast(null));
+		Object o = new Object();
+		assertEquals(o, CastTo.Object.cast(o));
 	}
 	
 	@Test
@@ -213,5 +231,10 @@ public class CastToTest
 		
 		assertEquals(CastTo.String, CastTo.getCasterRestrictlyForTargetClass(String.class));
 		assertEquals(CastTo.String, CastTo.getCasterRestrictlyForTargetClass(CharSequence.class));
+		
+		assertEquals(CastTo.Date, CastTo.getCasterRestrictlyForTargetClass(Date.class));
+		assertEquals(CastTo.Date, CastTo.getCasterRestrictlyForTargetClass(java.sql.Date.class));
+		
+		assertEquals(CastTo.Object, CastTo.getCasterRestrictlyForTargetClass(Object.class));
 	}
 }
