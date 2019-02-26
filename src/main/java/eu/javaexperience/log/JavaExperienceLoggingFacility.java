@@ -14,7 +14,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import eu.javaexperience.arrays.ArrayTools;
 import eu.javaexperience.collection.PublisherCollection;
+import eu.javaexperience.collection.enumerations.EnumTools;
 import eu.javaexperience.io.IOTools;
 import eu.javaexperience.io.LocklessPrintWriter;
 import eu.javaexperience.parse.ParsePrimitive;
@@ -31,6 +33,20 @@ public class JavaExperienceLoggingFacility
 	
 	protected static LoggingDetailLevel lookupDefaultLoglevel()
 	{
+		String ll = System.getenv("JVX_DEFAULT_LOG_LEVEL");
+		if(null != ll)
+		{
+			LogLevel ret = EnumTools.recogniseSymbol(LogLevel.class, ll);
+			if(null == ret)
+			{
+				System.out.println("Env variable `JVX_DEFAULT_LOG_LEVEL` specified as `"+ll+"` which is an unrecognisable loglevel. Available loglevels are: "+ArrayTools.toString(LogLevel.values()));
+			}
+			else
+			{
+				return ret;
+			}
+		}
+		
 		return LogLevel.MEASURE;
 	}
 	
