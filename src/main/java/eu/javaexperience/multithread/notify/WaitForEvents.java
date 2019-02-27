@@ -1,16 +1,11 @@
 package eu.javaexperience.multithread.notify;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.Serializable;
-
 import eu.javaexperience.interfaces.simple.SimpleCall;
+import eu.javaexperience.reflect.Mirror;
 
-public class WaitForEvents implements Serializable/*Nem sok értelme van,de legalább amiben ez benne van nem nyíg*/, SimpleCall
+public class WaitForEvents implements SimpleCall
 {
-	private static final long serialVersionUID = 1L;
-
 	private Object waitLock = new Object();
 	
 	private Object nextWaitLock = new Object();
@@ -76,32 +71,41 @@ public class WaitForEvents implements Serializable/*Nem sok értelme van,de lega
 	
 	public void waitForAllEvent()
 	{
+		waitForAllEvent(0);
+	}
+	
+	public void waitForAllEvent(long msTimeout)
+	{
 		synchronized (waitLock)
 		{
 			try
 			{
 				while(numActual < numRequired)
-					waitLock.wait();
+					waitLock.wait(msTimeout);
 			}
 			catch (Exception e)
 			{}
-
 		}
 		
 	}
 	
 	public void waitForNextEvent()
 	{
+		waitForNextEvent(0);
+	}
+	
+	public void waitForNextEvent(long msTimeout)
+	{
 		synchronized (nextWaitLock)
 		{
 			try
 			{
-				nextWaitLock.wait();
+				nextWaitLock.wait(msTimeout);
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
-			};
+				Mirror.propagateAnyway(e);
+			}
 		}
 	}
 
