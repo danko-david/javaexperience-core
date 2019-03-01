@@ -1,12 +1,13 @@
 package eu.javaexperience.resource.pool;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.Closeable;
+import java.io.IOException;
 
-public class IssuedResource<T>
+public class IssuedResource<T> implements Closeable
 {
 	protected final TrackedResourcePool<T> pool;
-	protected final T resource;
-	final AtomicBoolean issued = new AtomicBoolean();
+	protected T resource;
+	protected boolean issued = true;
 	
 	public IssuedResource(TrackedResourcePool<T> pool, T resource)
 	{
@@ -21,11 +22,27 @@ public class IssuedResource<T>
 	
 	public void release()
 	{
-		pool.releaseResource(this);
+		synchronized(this)
+		{
+			if(!issued)
+			{
+				throw new RuntimeException("Resource double release!");
+			}
+			pool.releaseResource(this);
+			resource = null;
+			issued = false;
+		}
+		
 	}
 	
 	public T getResource()
 	{
 		return resource;
+	}
+
+	@Override
+	public void close() throws IOException
+	{
+		release();
 	}
 }

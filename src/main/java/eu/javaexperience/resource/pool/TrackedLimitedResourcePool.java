@@ -12,7 +12,7 @@ import eu.javaexperience.semantic.references.MayNull;
 
 public class TrackedLimitedResourcePool<T> implements TrackedResourcePool<T>
 {
-	protected final ConcurrentLinkedQueue<IssuedResource<T>> free = new ConcurrentLinkedQueue<>();
+	protected final ConcurrentLinkedQueue<T> free = new ConcurrentLinkedQueue<>();
 	
 	protected final AtomicInteger issued = new AtomicInteger();
 	
@@ -48,10 +48,7 @@ public class TrackedLimitedResourcePool<T> implements TrackedResourcePool<T>
 		if(resource.pool != this)
 			throw new IllegalArgumentException("The resource acquired from other resource pool");
 		
-		if(!resource.issued.getAndSet(false))
-			throw new RuntimeException("Resource double release!");
-		
-		free.add(resource);
+		free.add(resource.getResource());
 		issued.decrementAndGet();
 		limiter.release();
 	}
@@ -76,41 +73,38 @@ public class TrackedLimitedResourcePool<T> implements TrackedResourcePool<T>
 		else if(!limiter.tryAcquire(paramLong, paramTimeUnit))
 			return null;
 		
-		IssuedResource<T> ret = free.poll();
+		T ret = free.poll();
 		if(ret == null)
 		{
-			ret = new IssuedResource<T>(this, factory.get());
+			ret = factory.get();
 		}
 
-		ret.issued.set(true);
-		
 		issued.incrementAndGet();
-		return ret;
+		return new IssuedResource<>(this, ret);
 	}
 
 	@Override
 	public @MayNull IssuedResource<T> pollResource()
 	{
-		IssuedResource<T> ret = free.poll();
+		T ret = free.poll();
 		if(null == ret)
 		{
 			return null;
 		}
 		
-		ret.issued.set(true);
 		issued.incrementAndGet();
-		return ret;
+		return new IssuedResource<>(this, ret);
 	}
 
 	@Override
 	public void destroyResource(IssuedResource<T> resource)
 	{
-		if(!resource.issued.get())
+		if(!resource.issued)
 		{
-			throw new RuntimeException("Resource released (not acquired), can't be destroyed");
+			throw new RuntimeException("Resource released, can't be destroyed");
 		}
-		
-		
+		resource.issued = false;
+		resource.resource = null;
 		issued.decrementAndGet();
 	}
 }

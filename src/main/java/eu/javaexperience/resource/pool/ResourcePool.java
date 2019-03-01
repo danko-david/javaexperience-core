@@ -20,7 +20,7 @@ public interface ResourcePool<T>
 	
 	/**
 	 * Try acquire a resource, if available  within the given time.
-	 * returns null if time is out. 
+	 * returns null if on timeout. 
 	 * */
 	public @MayNull T tryAcquireResource(long paramLong, TimeUnit paramTimeUnit) throws InterruptedException;
 	
