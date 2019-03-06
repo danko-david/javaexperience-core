@@ -30,7 +30,6 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 		return origin;
 	}
 	
-	@Deprecated
 	public Map<K, V> getAccessMap()
 	{
 		return access;
@@ -41,12 +40,12 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 		return diff;
 	}
 	
-	public Map<K, V> getModifiyableMap()
+	public Map<K, V> getModifiableMap()
 	{
 		return modifiable;
 	}
 	
-	protected static final Object NULL_VALUE = new Object();
+	public static final Object NULL_VALUE = new Object();
 	
 	protected V touchValue(K key)
 	{
@@ -54,7 +53,15 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 			Object in = access.get(key);
 			if(null != in)
 			{
-				return modifiable.get(key);
+				in = modifiable.get(key);
+				if(NULL_VALUE == in)
+				{
+					return null;
+				}
+				else
+				{
+					return (V) in;
+				}
 			}
 		}
 		
@@ -86,15 +93,17 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 	@Override
 	public V put(K key, V value)
 	{
-		touchValue(key);
-		return modifiable.put(key, value);
+		V o = touchValue(key);
+		modifiable.put(key, value);
+		return o;
 	}
 
 	@Override
 	public V remove(Object key)
 	{
-		touchValue((K) key);
-		return modifiable.remove(key);
+		V o = touchValue((K) key);
+		modifiable.put((K) key, (V) NULL_VALUE);
+		return o;
 	}
 
 	@Override
@@ -109,7 +118,12 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return modifiable.keySet();
+		Set<K> ret = modifiable.keySet();
+		for(K k:ret)
+		{
+			touchValue(k);
+		}
+		return ret;
 	}
 
 	public V getAccessTimeValue(K key)
@@ -122,4 +136,19 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 		
 		return in;
 	}
+	
+	@Override
+	public int size()
+	{
+		int ret = 0;
+		for(V v:values())
+		{
+			if(null != v)
+			{
+				++ret;
+			}
+		}
+		return ret;
+	}
+
 }
