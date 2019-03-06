@@ -1,5 +1,9 @@
 package eu.javaexperience.datastorage;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,51 +59,67 @@ public abstract class DataStorageTest
 	@Test
 	public void test() throws Throwable
 	{
-		try(DataTransaction tr = ds.startTransaction("t1"))
+		try
 		{
-			tr.put("a", 1);
-			tr.put("b", 2);
-			tr.put("b.a", 3);
-			tr.put("b.b", 4);
-			tr.put("b.c", 5);
-			tr.commit();
+			try(DataTransaction tr = ds.startTransaction("t1"))
+			{
+				tr.put("a", 1);
+				tr.put("b", 2);
+				tr.put("b.a", 3);
+				tr.put("b.b", 4);
+				tr.put("b.c", 5);
+				tr.commit();
+			}
+			
+			try(DataTransaction tr = ds.startTransaction("t1"))
+			{
+				matchEntrySet
+				(
+					tr.entrySet(),
+					new KeyVal<>("a", "1"),
+					new KeyVal<>("b", "2"),
+					new KeyVal<>("b.a", "3"),
+					new KeyVal<>("b.b", "4"),
+					new KeyVal<>("b.c", "5")
+				);
+			}
+			
+			try(DataTransaction tr = ds.startTransaction("t1.b"))
+			{
+				matchEntrySet
+				(
+					tr.entrySet(),
+					new KeyVal<>("a", "3"),
+					new KeyVal<>("b", "4"),
+					new KeyVal<>("c", "5")
+				);
+			}
+			
+			try(DataTransaction tr = ds.startTransaction(""))
+			{
+				matchEntrySet
+				(
+					tr.entrySet(),
+					new KeyVal<>("t1.a", "1"),
+					new KeyVal<>("t1.b", "2"),
+					new KeyVal<>("t1.b.a", "3"),
+					new KeyVal<>("t1.b.b", "4"),
+					new KeyVal<>("t1.b.c", "5")
+				);
+			}
 		}
-		
-		try(DataTransaction tr = ds.startTransaction("t1"))
+		finally
 		{
-			matchEntrySet
-			(
-				tr.entrySet(),
-				new KeyVal<>("a", "1"),
-				new KeyVal<>("b", "2"),
-				new KeyVal<>("b.a", "3"),
-				new KeyVal<>("b.b", "4"),
-				new KeyVal<>("b.c", "5")
-			);
-		}
-		
-		try(DataTransaction tr = ds.startTransaction("t1.b"))
-		{
-			matchEntrySet
-			(
-				tr.entrySet(),
-				new KeyVal<>("a", "3"),
-				new KeyVal<>("b", "4"),
-				new KeyVal<>("c", "5")
-			);
-		}
-		
-		try(DataTransaction tr = ds.startTransaction(""))
-		{
-			matchEntrySet
-			(
-				tr.entrySet(),
-				new KeyVal<>("t1.a", "1"),
-				new KeyVal<>("t1.b", "2"),
-				new KeyVal<>("t1.b.a", "3"),
-				new KeyVal<>("t1.b.b", "4"),
-				new KeyVal<>("t1.b.c", "5")
-			);
+			try(DataTransaction tr = ds.startTransaction("t1"))
+			{
+				tr.clear();
+				tr.commit();
+			}
+			
+			try(DataTransaction tr = ds.startTransaction("t1"))
+			{
+				assertTrue(tr.keySet().isEmpty());
+			}	
 		}
 	}
 }

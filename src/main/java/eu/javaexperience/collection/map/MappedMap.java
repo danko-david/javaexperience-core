@@ -79,7 +79,7 @@ public class MappedMap<K, V> extends AbstractMap<K, V> implements Map<K, V>
 	{
 		for(K k:keySet())
 		{
-			map.remove(k);
+			map.remove(mapper.wrap(k));
 		}
 	}
 
