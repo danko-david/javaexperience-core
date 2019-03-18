@@ -203,6 +203,18 @@ public class FormatTest
 		assertEquals("0123.2345", Format.cutFloatDecimals("0123.2345", 4));
 		assertEquals("0123.2345", Format.cutFloatDecimals("0123.2345", 5));
 		assertEquals("0123.2345", Format.cutFloatDecimals("0123.2345", 6));
+		
+		assertEquals("100", Format.cutFloatDecimals("100", 1));
+		assertEquals("100", Format.cutFloatDecimals("100", 2));
+		assertEquals("100", Format.cutFloatDecimals("100", 3));
+		
+		assertEquals("0", Format.cutFloatDecimals("0.0", 1));
+		assertEquals("0", Format.cutFloatDecimals("0.0", 2));
+		assertEquals("0", Format.cutFloatDecimals("0.0", 3));
+		
+		assertEquals("100", Format.cutFloatDecimals("100.", 1));
+		assertEquals("100", Format.cutFloatDecimals("100.", 2));
+		assertEquals("100", Format.cutFloatDecimals("100.", 3));
 	}
 	
 	@Test

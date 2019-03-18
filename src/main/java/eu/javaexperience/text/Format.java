@@ -215,7 +215,7 @@ public class Format
 				bp = false;
 				
 				//lookahead
-				int max = Math.min(decimals, num.length()-i);
+				int max = Math.min(decimals, num.length()-i-1);
 				boolean need = false;
 				for(int j=0;j < max;++j)
 				{
