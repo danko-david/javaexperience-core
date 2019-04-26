@@ -18,6 +18,7 @@ import eu.javaexperience.struct.GenericStruct8;
 import eu.javaexperience.text.Format;
 import eu.javaexperience.text.StringTools;
 import eu.javaexperience.collection.PublisherCollection;
+import eu.javaexperience.collection.map.SmallMap;
 import eu.javaexperience.database.annotations.Length;
 import eu.javaexperience.interfaces.simple.SimpleGet;
 import eu.javaexperience.interfaces.simple.getBy.GetBy1;
@@ -33,6 +34,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -1535,6 +1537,39 @@ public class JDBC
 	
 	public static boolean simpleInsertIntoTableFromJavaObject(Connection conn, Field[] fields, String table, Object o, Field... except) throws SQLException, IllegalArgumentException, IllegalAccessException
 	{
+		if(null != except && except.length > 0)
+		{
+			Field[] f = new Field[fields.length];
+			int n = 0;
+			out:for(Field add: fields)
+			{
+				for(Field e:except)
+				{
+					if(add == e)
+					{
+						continue out;
+					}
+				}
+				
+				f[n++] = add;
+			}
+			
+			if(n != fields.length)
+			{
+				fields = Arrays.copyOf(f, n);
+			}
+		}
+		
+		if(0 == fields.length)
+		{
+			return false;
+		}
+		
+		return null != simpleInsertIntoTableFromJavaObjectResultInsertion(conn, fields, table, o);
+	}
+	
+	public static Map<String, Object> simpleInsertIntoTableFromJavaObjectResultInsertion(Connection conn, Field[] fields, String table, Object o) throws SQLException, IllegalArgumentException, IllegalAccessException
+	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ");
 		sb.append(table);
@@ -1544,14 +1579,6 @@ public class JDBC
 		
 		for(int i=0;i<fields.length;++i)
 		{
-			for(Field e:except)
-			{
-				if(e == fields[i])
-				{
-					continue;
-				}
-			}
-			
 			if(i > 0)
 				sb.append(",");
 			
@@ -1578,17 +1605,26 @@ public class JDBC
 		{
 			for(int i=0;i<fields.length;++i)
 			{
-				for(Field e:except)
-				{
-					if(e == fields[i])
-					{
-						continue;
-					}
-				}
 				ps.setObject(++nums, fields[i].get(o));
 			}
 			
-			return ps.executeUpdate() != 0;
+			Map<String, Object> ret = null;
+			if(ps.executeUpdate() != 0)
+			{
+				ret = new SmallMap<>();
+				
+				try(ResultSet generatedKeys = ps.getGeneratedKeys())
+				{
+					ResultSetMetaData md = generatedKeys.getMetaData();
+					int count = md.getColumnCount();
+					for(int i = 1;i <= count;++i)
+					{
+						ret.put(md.getColumnLabel(i), generatedKeys.getObject(i));
+					}
+				}
+			}
+			
+			return ret;
 		}
 	}
 	
