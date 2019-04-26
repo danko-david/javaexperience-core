@@ -1615,11 +1615,14 @@ public class JDBC
 				
 				try(ResultSet generatedKeys = ps.getGeneratedKeys())
 				{
-					ResultSetMetaData md = generatedKeys.getMetaData();
-					int count = md.getColumnCount();
-					for(int i = 1;i <= count;++i)
+					if(generatedKeys.next())
 					{
-						ret.put(md.getColumnLabel(i), generatedKeys.getObject(i));
+						ResultSetMetaData md = generatedKeys.getMetaData();
+						int count = md.getColumnCount();
+						for(int i = 1;i <= count;++i)
+						{
+							ret.put(md.getColumnLabel(i), generatedKeys.getObject(i));
+						}
 					}
 				}
 			}
