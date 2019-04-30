@@ -420,7 +420,7 @@ public class Format
 
 		static
 		{
-			matchers = new LinkedList<Matcher>();
+			matchers = new LinkedList<>();
 			matchers.add(new NowMatcher());
 			matchers.add(new TomorrowMatcher());
 			
@@ -435,10 +435,10 @@ public class Format
 			
 			//to sec with timezone
 			
-			stringFormats.add("EEE, dd-MMM-yyyy HH:mm:ss z");
-			stringFormats.add("EEE, dd MMM yyyy HH:mm:ss zzz");
+			stringFormats.add("EEE dd-MMM-yyyy HH:mm:ss z");
+			stringFormats.add("EEE dd MMM yyyy HH:mm:ss zzz");
 			stringFormats.add("yyyy.MM.dd G 'at' HH:mm:ss z");
-			stringFormats.add("EEE, d MMM yyyy HH:mm:ss Z");
+			stringFormats.add("EEE d MMM yyyy HH:mm:ss Z");
 			
 			//000 => 111
 			stringFormats.add("MM/dd/yyyy hh:mm:ss aaa");
@@ -478,6 +478,17 @@ public class Format
 			stringFormats.add("yyyy-MM-dd");
 			stringFormats.add("yyyy.MM.dd");
 			stringFormats.add("yyyy.MM.dd.");
+			
+			
+			//DayofWeek, Month, day, year hour:min:sec			
+			stringFormats.add("EEEE MMMM d yyyy hh:mm:ss");
+			stringFormats.add("EEEE MMMM d yyyy hh:mm:s");
+			stringFormats.add("EEEE MMMM d yyyy hh:m:ss");
+			stringFormats.add("EEEE MMMM d yyyy hh:m:s");
+			
+			//Tuesday 30, April 2019
+			stringFormats.add("EEEE d MMMM yyyy");
+			
 			
 			
 			for(String s:stringFormats)
@@ -563,6 +574,11 @@ public class Format
 
 		public static Date strtotime(String input)
 		{
+			if(null != input)
+			{
+				input = StringTools.replaceAllStrings(input, ",", "");
+			}
+			
 			for(Matcher matcher:matchers)
 			{
 				Date date = matcher.tryConvert(input);

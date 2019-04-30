@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.MissingFormatArgumentException;
+import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -19,6 +20,17 @@ public class FormatTest
 	{
 		Date d = strToTime(str);
 		Date cmp = TimeCalc.setToDate(new Date(), year, month-1, day, hour, min, sec, ms);
+		
+		boolean success = TimeCalc.dateEqualsByUnits(d, cmp, year > -1, month > -1, day> -1, hour > -1, min > -1, sec > -1, ms > -1);
+		assertTrue(success);
+		//System.err.println((success?"SUCCESS: ":"FAIL: ")+str+" => parse: "+Format.sqlTimestampMilisec(d)+" <=> cmp: "+Format.sqlTimestampMilisec(cmp));
+	}
+	
+	protected static void testStrToTimeUTC(String str, int year, int month, int day, int hour, int min, int sec, int ms)
+	{
+		Date d = strToTime(str);
+		
+		Date cmp = TimeCalc.dateUtc(year > 0?year:0, month>0?month:0, day>0?day:0, hour>0?hour:0, min>0?min:0, sec>0?sec:0, ms>0?ms:0);
 		
 		boolean success = TimeCalc.dateEqualsByUnits(d, cmp, year > -1, month > -1, day> -1, hour > -1, min > -1, sec > -1, ms > -1);
 		assertTrue(success);
@@ -40,8 +52,7 @@ public class FormatTest
 		testStrToTime("2018/10/02 12:06:01", 2018, 10, 2, 12, 6, 1, -1);
 		testStrToTime("2018.11.08 12:05", 2018, 11, 8, 12, 5, -1, -1);
 		
-		//this might fail 
-		assertEquals(strToTime("now"), new Date());
+		
 		
 		assertTrue(MathTools.inRange(TimeCalc.addToDate(new Date(), 0, 0, 1, 0, 0, 0, 0).getTime(), strToTime("tomorrow").getTime(), 500));
 		
@@ -57,9 +68,20 @@ public class FormatTest
 	@Test
 	public void testStrToTime3()
 	{
-		//this might fail if there's higher time jitter between parsing and construction of date.
-		assertEquals(strToTime("now"), new Date());
-	}		
+		assertTrue(MathTools.inRange(strToTime("now").getTime(), System.currentTimeMillis(), 500));
+	}
+	
+	@Test
+	public void testCookieDate()
+	{
+		testStrToTimeUTC("Wed, 30-Oct-2019 12:11:25 GMT", 2019, 10, 30, 12, 11, 25, -1);
+	}
+	
+	@Test
+	public void testStrToTime4()
+	{
+		testStrToTime("Tuesday 30, April 2019", 2019, 4, 30, -1, -1, -1, -1);
+	}
 	
 	@Test
 	public void testSqlTimestampMilisec()
