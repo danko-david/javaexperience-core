@@ -1573,9 +1573,9 @@ public class JDBC
 	public static Map<String, Object> simpleInsertIntoTableFromJavaObjectResultInsertion(Connection conn, Field[] fields, String table, Object o) throws SQLException, IllegalArgumentException, IllegalAccessException
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO ");
+		sb.append("INSERT INTO `");
 		sb.append(table);
-		sb.append(" (");
+		sb.append("` (");
 		
 		int nums = 0;
 		
