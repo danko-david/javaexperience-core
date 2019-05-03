@@ -15,9 +15,7 @@ import eu.javaexperience.struct.GenericStruct5;
 import eu.javaexperience.struct.GenericStruct6;
 import eu.javaexperience.struct.GenericStruct7;
 import eu.javaexperience.struct.GenericStruct8;
-import eu.javaexperience.text.Format;
 import eu.javaexperience.text.StringTools;
-import eu.javaexperience.collection.PublisherCollection;
 import eu.javaexperience.collection.map.SmallMap;
 import eu.javaexperience.database.annotations.Length;
 import eu.javaexperience.interfaces.simple.SimpleGet;
@@ -33,18 +31,22 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-//TODO logging facility in debug mode show all the queries!
 
+
+/**
+ * TODO:
+ *	- test all function with table that named as a mysql keyword like:
+ * 		SELECT * FROM match WHERE status = 1 (ensure keywords are escaped)
+ * 	- test with MySQL Sqlite Postgre 
+ * */
 public class JDBC
 {
 
@@ -1647,8 +1649,9 @@ public class JDBC
 			if(i > 0)
 				sb.append(", ");
 			
+			sb.append("`");
 			sb.append(fields[i].getName());
-			sb.append("=?");
+			sb.append("` =?");
 		}
 		
 		if(whereCondition != null)

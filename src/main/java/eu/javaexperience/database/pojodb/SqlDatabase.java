@@ -38,7 +38,7 @@ public class SqlDatabase implements Database
 		T ret = cls.newInstance();
 		try(Connection conn = pool.getConnection())
 		{
-			try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM "+ret.getTable()+" WHERE "+field+"= ?"))
+			try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM `"+ret.getTable()+"` WHERE `"+field+"`= ?"))
 			{
 				ps.setObject(1, id);
 				ResultSet rs = ps.executeQuery();
@@ -118,7 +118,7 @@ public class SqlDatabase implements Database
 		{
 			try
 			{
-				JDBC.executePrepared(conn, "DELETE FROM "+m.getTable()+" WHERE "+m.getIdField().getName()+" = ? ", m.getIdField().get(m));
+				JDBC.executePrepared(conn, "DELETE FROM `"+m.getTable()+"` WHERE `"+m.getIdField().getName()+"` = ? ", m.getIdField().get(m));
 			}
 			catch (IllegalAccessException | IllegalArgumentException e)
 			{
@@ -133,7 +133,7 @@ public class SqlDatabase implements Database
 		T ret = cls.newInstance();
 		try(Connection conn = pool.getConnection())
 		{
-			try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM "+ret.getTable()))
+			try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM `"+ret.getTable()+"`"))
 			{
 				ResultSet rs = ps.executeQuery();
 				while(rs.next())
