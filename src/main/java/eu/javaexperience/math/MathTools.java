@@ -25,7 +25,8 @@ public class MathTools
 		
 		return value;
 	}
-
+	
+	//TODO this can be inaccurate (wrong) when dealing with BigDecimal 
 	public static boolean inRange(Number Reference, Number Check, Number Range)
 	{
 		if(null == Reference || null == Check)
@@ -46,6 +47,7 @@ public class MathTools
 		return check-range <= ref && ref <= check+range;
 	}
 	
+	//TODO this can be inaccurate (wrong) when dealing with BigDecimal
 	public static boolean inRelativeRange(Number Reference, Number Check, Number RangePercent)
 	{
 		if(null == Reference || null == Check)
@@ -90,6 +92,7 @@ public class MathTools
 		return ret;
 	}
 
+	//TODO use Number interface which is comparable
 	public static Long getMaxLong(List<? extends Number> lst)
 	{
 		boolean assigned = false;
