@@ -1603,7 +1603,7 @@ public class JDBC
 		sb.append(");");
 		
 		nums = 0;
-		try(PreparedStatement ps = conn.prepareStatement(sb.toString()))
+		try(PreparedStatement ps = conn.prepareStatement(sb.toString(), Statement.RETURN_GENERATED_KEYS))
 		{
 			for(int i=0;i<fields.length;++i)
 			{
