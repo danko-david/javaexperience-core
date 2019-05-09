@@ -249,6 +249,7 @@ public abstract class DirectoryContentBasedMap<T> implements Map<String, T>, Clo
 	public synchronized Set<String> keySet()
 	{
 		Set<String> ret = new HashSet<>();
+		//TODO that's wrong! we return the keys that we dropped.
 		ret.addAll(keyStore);
 		return ret;
 	}
