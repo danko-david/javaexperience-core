@@ -131,4 +131,14 @@ public class TimeLineElement<T>
 	{
 		return "from: "+Format.sqlTimestamp(getDateFrom())+", to: "+Format.sqlTimestamp(getDateTo())+", dur: "+TimeCalc.durationToHourMin(duration());
 	}
+
+	public boolean isIntersects(long from, long to)
+	{
+		return from < this.to && to > this.from;
+	}
+	
+	public boolean isIntersects(Date from, Date to)
+	{
+		return isIntersects(from.getTime(), to.getTime());
+	}
 }

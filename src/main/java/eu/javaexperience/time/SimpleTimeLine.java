@@ -495,6 +495,20 @@ public class SimpleTimeLine<T extends TimeLineElement<T>> implements Iterable<T>
 		return null;
 	}
 	
+	public T getFirstElementBetweenIntersects(Date from, Date to)
+	{
+		T elem = begin;
+		while(elem != null)
+		{
+			if(elem.isIntersects(from, to))
+				return elem;
+			
+			elem =  elem.next;
+		}
+
+		return null;
+	}
+	
 	public void getElementsDurationIs(long inMilisec,Collection<T> store)
 	{
 		T elem = begin;
