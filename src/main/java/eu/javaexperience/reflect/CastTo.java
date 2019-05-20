@@ -1,5 +1,8 @@
 package eu.javaexperience.reflect;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import eu.javaexperience.interfaces.simple.getBy.GetBy1;
 import eu.javaexperience.text.Format.strtotime;
 
@@ -66,6 +69,12 @@ public enum CastTo implements NotatedCaster
 		{
 			return Boolean.class.isAssignableFrom(cls) || boolean.class.isAssignableFrom(cls);
 		}
+
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Boolean.class, boolean.class};
+		}
 	},
 	
 	Byte("byte")
@@ -110,6 +119,12 @@ public enum CastTo implements NotatedCaster
 		public boolean canAssignForType(Class<?> cls)
 		{
 			return Byte.class.isAssignableFrom(cls) || byte.class.isAssignableFrom(cls);
+		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Byte.class, byte.class};
 		}
 	},
 	
@@ -161,6 +176,12 @@ public enum CastTo implements NotatedCaster
 		{
 			return Character.class.isAssignableFrom(cls) || char.class.isAssignableFrom(cls);
 		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Character.class, char.class};
+		}
 	},
 	
 	
@@ -207,6 +228,12 @@ public enum CastTo implements NotatedCaster
 		{
 			return Short.class.isAssignableFrom(cls) || short.class.isAssignableFrom(cls);
 		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Short.class, short.class};
+		}
 	},
 	
 	Int("int")
@@ -251,6 +278,12 @@ public enum CastTo implements NotatedCaster
 		public boolean canAssignForType(Class<?> cls)
 		{
 			return Integer.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls);
+		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Integer.class, int.class};
 		}
 	},
 	
@@ -297,6 +330,12 @@ public enum CastTo implements NotatedCaster
 		{
 			return Long.class.isAssignableFrom(cls) || long.class.isAssignableFrom(cls);
 		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Long.class, long.class};
+		}
 	},
 	
 	Float("float")
@@ -335,6 +374,12 @@ public enum CastTo implements NotatedCaster
 		public boolean canAssignForType(Class<?> cls)
 		{
 			return Float.class.isAssignableFrom(cls) || float.class.isAssignableFrom(cls);
+		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Float.class, float.class};
 		}
 	},
 	
@@ -381,6 +426,12 @@ public enum CastTo implements NotatedCaster
 		{
 			return Double.class.isAssignableFrom(cls) || double.class.isAssignableFrom(cls);
 		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{Double.class, double.class};
+		}
 	},
 	
 	String("String", "java.lang.String")
@@ -405,6 +456,12 @@ public enum CastTo implements NotatedCaster
 		public boolean canAssignForType(Class<?> cls)
 		{
 			return String.class.isAssignableFrom(cls) || CharSequence.class.isAssignableFrom(cls);
+		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{String.class, CharSequence.class, StringBuilder.class, StringBuffer.class};
 		}
 	},
 	
@@ -444,6 +501,12 @@ public enum CastTo implements NotatedCaster
 		{
 			return java.util.Date.class.isAssignableFrom(cls);
 		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{java.util.Date.class, java.sql.Date.class};
+		}
 	},
 	
 	Object("Object", "java.lang.Object")
@@ -458,6 +521,12 @@ public enum CastTo implements NotatedCaster
 		public boolean canAssignForType(Class<?> cls)
 		{
 			return true;
+		}
+		
+		@Override
+		public Class[] getAssignTypes()
+		{
+			return new Class[]{};
 		}
 	}
 	
@@ -506,6 +575,8 @@ public enum CastTo implements NotatedCaster
 
 	};
 	
+	public abstract Class[] getAssignTypes();
+	
 	public abstract boolean canAssignForType(Class<?> cls);
 	
 	private static final CastTo whitoutObject[] = new CastTo[values().length-1];
@@ -518,6 +589,19 @@ public enum CastTo implements NotatedCaster
 				whitoutObject[ep++] = t;
 	}
 	
+	protected static Map<Class, CastTo> typeToCaster = new IdentityHashMap<>();
+	
+	static
+	{
+		for(CastTo t:whitoutObject)
+		{
+			for(Class c: t.getAssignTypes())
+			{
+				typeToCaster.put(c, t);
+			}
+		}
+	}
+	
 	public static CastTo getCasterRestrictlyForTargetClass(Class<?> cls)
 	{
 		if(Object.class == cls)
@@ -525,20 +609,17 @@ public enum CastTo implements NotatedCaster
 			return Object;
 		}
 		
-		for(CastTo t:whitoutObject)
-			if(t.canAssignForType(cls))
-				return t;
-		
-		return null;
+		return typeToCaster.get(cls);
 	}
 	
 
 	public static CastTo getCasterForTargetClass(Class<?> cls)
 	{
-		for(CastTo t:whitoutObject)
-			if(t.canAssignForType(cls))
-				return t;
-		
+		CastTo ret = typeToCaster.get(cls);
+		if(null != ret)
+		{
+			return ret;
+		}
 		return Object;
 	}
 }
