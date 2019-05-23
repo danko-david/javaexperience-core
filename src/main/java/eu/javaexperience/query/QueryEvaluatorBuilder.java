@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import eu.javaexperience.exceptions.UnimplementedCaseException;
+import eu.javaexperience.interfaces.ObjectWithProperty;
 import eu.javaexperience.interfaces.simple.getBy.GetBy2;
 import eu.javaexperience.reflect.CastTo;
 import eu.javaexperience.reflect.Mirror;
@@ -11,7 +12,25 @@ import eu.javaexperience.reflect.PrimitiveTools;
 
 public class QueryEvaluatorBuilder<T>
 {
-	public GetBy2<Object, T, String> extractor = Mirror::tryGetFieldValue;
+	public GetBy2<Object, T, String> extractor = getMirrorFieldExtractor();
+	
+	public static <T> GetBy2<Object, T, String> getMirrorFieldExtractor()
+	{
+		return Mirror::tryGetFieldValue;
+	}
+	
+	public static <T> GetBy2<Object, T, String> getObjectWithPropertyExtractor()
+	{
+		return (a, b)->
+		{
+			if(a instanceof ObjectWithProperty)
+			{
+				return ((ObjectWithProperty)a).get(b);
+			}
+			
+			return null;
+		};
+	}
 	
 	public GetBy2<Boolean, Object, Object> equals = Mirror::equals;
 	
@@ -69,9 +88,9 @@ public class QueryEvaluatorBuilder<T>
 			else
 			{
 				boolean hasPassing = false;
-				for(Object e:ca)
+				for(Object a:ca)
 				{
-					Boolean eq = op.getBy(e, actual);
+					Boolean eq = op.getBy(expected, a);
 					if(restrictToAll_or_consessiveToAll && Boolean.TRUE != eq)
 					{
 						return false;
