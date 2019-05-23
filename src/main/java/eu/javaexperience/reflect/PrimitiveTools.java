@@ -99,4 +99,10 @@ public class PrimitiveTools
 	{
 		return null != toObjectClassType(cls, null);
 	}
+	
+	public static final Integer INT_ZERO = 0;
+	public static final Integer INT_ONE = 1;
+	public static final Integer INT_TWO = 2;
+	public static final Integer INT_TEN = 3;
+	
 }
