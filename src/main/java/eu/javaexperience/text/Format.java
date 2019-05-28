@@ -464,6 +464,7 @@ public class Format
 
 			//to minutes
 			stringFormats.add("yyyy-MM-dd'T'HH:mm");
+			stringFormats.add("yyyy-MM-dd HH:mm");
 			stringFormats.add("yyyy/MM/dd HH:mm");
 			stringFormats.add("yyyy.MM.dd HH:mm");
 			

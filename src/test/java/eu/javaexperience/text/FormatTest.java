@@ -53,6 +53,10 @@ public class FormatTest
 		testStrToTime("2018.11.08 12:05", 2018, 11, 8, 12, 5, -1, -1);
 		
 		
+		testStrToTime("2019-05-17 02:22", 2019, 5, 17, 2, 22, -1, -1);
+		
+		
+		
 		
 		assertTrue(MathTools.inRange(TimeCalc.addToDate(new Date(), 0, 0, 1, 0, 0, 0, 0).getTime(), strToTime("tomorrow").getTime(), 500));
 		
