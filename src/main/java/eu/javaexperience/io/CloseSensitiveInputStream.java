@@ -8,6 +8,11 @@ public class CloseSensitiveInputStream extends InputStream
 	protected final InputStream origin;
 	protected boolean isClosed = false;
 	
+	protected void closed()
+	{
+		isClosed = true;
+	}
+	
 	public CloseSensitiveInputStream(InputStream is)
 	{
 		origin = is;
@@ -22,7 +27,7 @@ public class CloseSensitiveInputStream extends InputStream
 		}
 		catch(IOException ex)
 		{
-			isClosed = true;
+			closed();
 			throw ex;
 		}
 	}
@@ -36,7 +41,7 @@ public class CloseSensitiveInputStream extends InputStream
 		}
 		catch(IOException ex)
 		{
-			isClosed = true;
+			closed();
 			throw ex;
 		}
 	}
@@ -50,7 +55,7 @@ public class CloseSensitiveInputStream extends InputStream
 		}
 		catch(IOException ex)
 		{
-			isClosed = true;
+			closed();
 			throw ex;
 		}
 	}
@@ -69,7 +74,7 @@ public class CloseSensitiveInputStream extends InputStream
 	@Override
 	public void close() throws IOException
 	{
-		isClosed = true;
+		closed();
 		origin.close();
 	}
 	
