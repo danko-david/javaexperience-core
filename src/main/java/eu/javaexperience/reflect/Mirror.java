@@ -1783,4 +1783,30 @@ public class Mirror
 			return null;
 		}
 	}
+	
+	public static Object tryCallBeanMethod(Method m, Object subject)
+	{
+		try
+		{
+			return m.invoke(subject);
+		}
+		catch(Exception e)
+		{
+			Mirror.propagateAnyway(e);
+			return null;
+		}
+	}
+	
+	public static Object tryCallMethod(Method m, Object subject, Object... params)
+	{
+		try
+		{
+			return m.invoke(subject, params);
+		}
+		catch(Exception e)
+		{
+			Mirror.propagateAnyway(e);
+			return null;
+		}
+	}
 }

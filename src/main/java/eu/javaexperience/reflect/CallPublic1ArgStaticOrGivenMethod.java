@@ -6,9 +6,10 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import eu.javaexperience.collection.map.SmallMap;
+import eu.javaexperience.interfaces.simple.getBy.GetBy1;
 import eu.javaexperience.interfaces.simple.publish.SimplePublish1;
 
-public class CallPublic1ArgStaticOrGivenMethod<T>
+public class CallPublic1ArgStaticOrGivenMethod<T> implements GetBy1<Method, String>
 {
 	private final Map<String,Method> meths = new SmallMap<>();
 	private final SimplePublish1<T> def;
@@ -64,5 +65,11 @@ public class CallPublic1ArgStaticOrGivenMethod<T>
 	public SimplePublish1<T> getDefaultCall()
 	{
 		return def;
+	}
+
+	@Override
+	public Method getBy(String a)
+	{
+		return getMethodByName(a);
 	}
 }
