@@ -5,14 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
-import javax.sql.ConnectionPoolDataSource;
-
+import eu.javaexperience.arrays.ArrayTools;
 import eu.javaexperience.database.ConnectionCreator;
 import eu.javaexperience.database.JDBC;
 import eu.javaexperience.database.JdbcConnectionPool;
+import eu.javaexperience.reflect.CastTo;
 import eu.javaexperience.reflect.Mirror;
 
 public class SqlDatabase implements Database
@@ -55,6 +55,33 @@ public class SqlDatabase implements Database
 		return ret;
 	}
 	
+	public <T extends Model> int getInstances(Class<T> cls, Collection<T> dst, String query, Object... values) throws SQLException, InstantiationException, IllegalAccessException
+	{
+		T ret = cls.newInstance();
+		Field[] fs = ret.getFields();
+		int n = 0;
+		try(Connection conn = pool.getConnection())
+		{
+			try(PreparedStatement ps = conn.prepareStatement(query))
+			{
+				for(int i=0;i<values.length;++i)
+				{
+					ps.setObject(i+1, values[i]);
+				}
+				
+				ResultSet rs = ps.executeQuery();
+				while(rs.next())
+				{
+					T add = cls.newInstance();
+					JDBC.simpleReadIntoJavaObject(rs, fs, add);
+					dst.add(add);
+					++n;
+				}
+			}
+		}
+		return n;
+	}
+	
 	public JdbcConnectionPool getPool()
 	{
 		return pool;
@@ -73,11 +100,41 @@ public class SqlDatabase implements Database
 		{
 			try
 			{
-				JDBC.simpleInsertIntoTableFromJavaObject(conn, m.getFields(), m.getTable(), m, m.getIdField());
+				Field id = m.getIdField();
+				Field[] fields = m.getFields();
+				if(null != id)
+				{
+					fields = ArrayTools.withoutElementIdentically(m.getFields(), id);
+				}
+				Map<String, Object> res = JDBC.simpleInsertIntoTableFromJavaObjectResultInsertion(conn, fields, m.getTable(), m);
+				
+				if(null != id && null != res)
+				{
+					CastTo cast = CastTo.getCasterRestrictlyForTargetClass(id.getType());
+					Object vId = res.get("GENERATED_KEY");
+					if(null == vId)
+					{
+						throw new RuntimeException("No generated id returned after insertion: "+m);
+					}
+					
+					if(null == cast)
+					{
+						throw new RuntimeException("Unmanagable id type :"+id);
+					}
+					
+					Object set = cast.cast(vId);
+					
+					if(null == set)
+					{
+						throw new RuntimeException("Can't cast generated id for raget type. id: "+vId+", field and type: "+id);
+					}
+					
+					id.set(m, set);
+				}
 			}
 			catch (Exception e)
 			{
-				Mirror.throwSoftOrHardButAnyway(e);
+				Mirror.propagateAnyway(e);
 			}
 		}
 	}
