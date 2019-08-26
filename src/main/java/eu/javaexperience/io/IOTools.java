@@ -1,8 +1,6 @@
 package eu.javaexperience.io;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +15,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -29,6 +26,7 @@ import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 
 import eu.javaexperience.file.AbstractFile;
+import eu.javaexperience.file.FileSystemTools;
 import eu.javaexperience.interfaces.simple.SimpleCall;
 import eu.javaexperience.interfaces.simple.publish.SimplePublish1;
 import eu.javaexperience.reflect.Mirror;
@@ -444,12 +442,16 @@ public class IOTools
 		return digestWith(md, file);
 	}
 	
-	
 	public static void loadFillAllLine(String file, Collection<String> lines) throws FileNotFoundException, IOException
+	{
+		loadFillAllLine(FileSystemTools.DEFAULT_FILESYSTEM.fromUri(file), lines);
+	}
+	
+	public static void loadFillAllLine(AbstractFile file, Collection<String> lines) throws FileNotFoundException, IOException
 	{
 		try
 		(
-			FileInputStream fis = new FileInputStream(file);
+			InputStream fis = file.openRead();
 			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
 		)
 		{
@@ -460,7 +462,7 @@ public class IOTools
 			}
 		}
 	}
-
+	
 	public static String[] readAllLine(File in) throws FileNotFoundException, IOException
 	{
 		try

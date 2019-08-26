@@ -26,16 +26,16 @@ import eu.javaexperience.log.LoggingTools;
 
 public class JdbcIssuedConnection implements Closeable, AutoCloseable, Connection
 {
-	private final Connection origin;
-	private final ConnectionData data;
-	private boolean closed = false;
+	protected final Connection origin;
+	protected final ConnectionData data;
+	protected boolean closed = false;
 	
-	Connection getOrigin()
+	protected Connection getOrigin()
 	{
 		return origin;
 	}
 	
-	JdbcIssuedConnection(ConnectionData c)
+	public JdbcIssuedConnection(ConnectionData c)
 	{
 		if(!c.free)
 			throw new RuntimeException("Kiadott kapcsolat újra ki lett adva");
