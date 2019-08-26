@@ -62,7 +62,7 @@ public class JdbcConnectionPool implements ConnectionPool
 	
 	public class ConnectionData
 	{
-		ConnectionData(Connection conn)
+		public ConnectionData(Connection conn)
 		{
 			this.conn = conn;
 		}
@@ -70,25 +70,6 @@ public class JdbcConnectionPool implements ConnectionPool
 		boolean check() throws SQLException
 		{
 			return free;
-			/*if(!free)
-				return false;
-			
-			if(conn.isClosed())
-				//újranyitás
-				conn = openNewConnection();
-
-			if(lastGet+timeoutMs >= System.currentTimeMillis())
-			{
-				try
-				{
-					conn.createStatement().execute(statemenetForTimeoutCheck);
-				}
-				catch(Exception e)
-				{
-					conn = openNewConnection();
-				}
-			}
-			return true;*/
 		}
 		
 		boolean free = true;
