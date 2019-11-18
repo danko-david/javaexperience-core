@@ -79,7 +79,7 @@ public class MysqlFieldMapper implements GetBy1<String, Field>
 			AutoIncrement ai = a.getAnnotation(AutoIncrement.class);
 			if(null != ai)
 			{
-				ret += " AUTO_INCREMENT";
+				ret += " AUTO INCREMENT";
 			}
 		}
 		
