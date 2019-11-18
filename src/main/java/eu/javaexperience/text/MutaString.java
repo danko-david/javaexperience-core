@@ -75,6 +75,12 @@ public class MutaString implements CharSequence
 		
 		return equals((MutaString) o);
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return toString().hashCode();
+	}
 
 	public boolean equals(MutaString obj)
 	{

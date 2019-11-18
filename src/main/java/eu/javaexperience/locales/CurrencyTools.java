@@ -54,6 +54,12 @@ public class CurrencyTools
 			{
 				return equalsByCurrencyIso4217(this, obj);
 			}
+			
+			@Override
+			public int hashCode()
+			{
+				return n.hashCode();
+			}
 		};
 	}
 	
