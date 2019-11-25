@@ -40,7 +40,7 @@ public class CSVTools
 			char c = column_name.charAt(i);
 			if('A' <= c && c <= 'Z')
 			{
-				ret += Math.pow(26, w)*(c - 'A' +1);
+				ret += (int) (Math.pow(26, w)*(c - 'A' +1));
 			}
 			else
 			{

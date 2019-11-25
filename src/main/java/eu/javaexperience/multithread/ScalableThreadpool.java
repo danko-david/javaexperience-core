@@ -63,14 +63,10 @@ public class ScalableThreadpool<T>
 			shrinkWorkers();
 			return;
 		}
-		else if(newCount > current)
+		else
+		//if(newCount > current)
 		{
 			growthWorkers();
-		}
-		else
-		{
-			System.out.println("Impossible: newCount:"+newCount+" current: "+current);
-			return;
 		}
 	}
 	

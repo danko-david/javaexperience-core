@@ -78,12 +78,14 @@ public class ArrayAsSet<T> implements Set<T>
 			public T next()
 			{
 				for(int i=cep;i<ep;i++)
+				{
 					if(arr[i] != null)
 					{
 						cep = i+1;
 						rets++;
 						return (T) arr[i];
 					}
+				}
 				return null;
 			}
 
@@ -101,9 +103,12 @@ public class ArrayAsSet<T> implements Set<T>
 		Object[] ret = new Object[vals];
 		int ep = 0;
 		for(int i=0;i<ep;i++)
+		{
 			if(arr[i] != null)
+			{
 				ret[ep++] = arr[i];
-		
+			}
+		}
 		return ret;
 	}
 

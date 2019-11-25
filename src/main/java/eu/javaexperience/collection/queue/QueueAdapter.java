@@ -18,18 +18,15 @@ public class QueueAdapter<T> extends PublisherCollection<T> implements Queue<T>
 		{
 			if(null != kv.getValue())
 			{
-				Integer val = Integer.parseInt(kv.getKey());
-				if(null != val)
+				int val = Integer.parseInt(kv.getKey());
+				lastVal = Math.max(lastVal, val);
+				if(firstVal == -1)
 				{
-					lastVal = Math.max(lastVal, val);
-					if(firstVal == -1)
-					{
-						firstVal = val;
-					}
-					else
-					{
-						firstVal = Math.min(firstVal, val);
-					}
+					firstVal = val;
+				}
+				else
+				{
+					firstVal = Math.min(firstVal, val);
 				}
 			}
 		}

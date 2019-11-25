@@ -103,10 +103,6 @@ public class FileBasedSet implements Set<String>, Closeable
 						start = i;
 						content = false;
 					}
-					else if(10 == val)
-					{
-						throw new RuntimeException("double empty space at "+i);
-					}
 					else
 					{
 						//start of new String
