@@ -9,12 +9,14 @@ import java.util.zip.ZipFile;
 
 import eu.javaexperience.arrays.ArrayTools;
 import eu.javaexperience.collection.iterator.IteratorTools;
+import eu.javaexperience.collection.tree.TreeMerger;
 import eu.javaexperience.collection.tree.TreeNode;
 import eu.javaexperience.collection.tree.TreeNodeTools;
 import eu.javaexperience.file.AbstractFile;
 import eu.javaexperience.file.AbstractFileSystem;
 import eu.javaexperience.file.FileSystemTools;
 import eu.javaexperience.interfaces.simple.getBy.GetBy1;
+import eu.javaexperience.interfaces.simple.publish.SimplePublish1;
 
 public class ZipFileSystem implements AbstractFileSystem
 {
@@ -75,6 +77,21 @@ public class ZipFileSystem implements AbstractFileSystem
 		return sb.toString();
 	}
 	
+	protected static final TreeMerger MERGER = new TreeMerger()
+	{
+		@Override
+		public Object getIdOf(TreeNode crnt)
+		{
+			return (String) crnt.getEtc("file");
+		}
+
+		@Override
+		public String getNameOf(TreeNode node)
+		{
+			return (String) node.getEtc("file");
+		}
+	};
+	
 	protected static TreeNode processZipFiles(ZipFile zip)
 	{
 		TreeNode ret = new TreeNode();
@@ -83,7 +100,25 @@ public class ZipFileSystem implements AbstractFileSystem
 			String[] path = FileSystemTools.decomposePath(e.getName());
 			TreeNodeTools.getOrCreatePath(ret, path, getNodeId, createNode).putEtc("ent", e);
 		}
+		
+		ret.putEtc("file", "");
 		ret.putEtc("ent", new ZipEntry("/"));
+		
+		//ensure directory entries also exists
+		ret.walkTree(new SimplePublish1<TreeNode>()
+		{
+			@Override
+			public void publish(TreeNode a)
+			{
+				ZipEntry e = (ZipEntry) a.getEtc("ent");
+				if(null == e)
+				{
+					String p = a.getPath(MERGER, "/");
+					a.putEtc("ent", new ZipEntry(p));
+				}
+			}
+		});
+		
 		return ret;
 	}
 	
@@ -97,5 +132,12 @@ public class ZipFileSystem implements AbstractFileSystem
 	public String getFileSeparator()
 	{
 		return File.separator;
+	}
+	
+	public static void main(String[] args) throws Throwable
+	{
+		ZipFileSystem zfs = new ZipFileSystem("/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar");
+		AbstractFile r = zfs.fromUri("java");
+		System.out.println(ArrayTools.toString(r.listFiles()));
 	}
 }
