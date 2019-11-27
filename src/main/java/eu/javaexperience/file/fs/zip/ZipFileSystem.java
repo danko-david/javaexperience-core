@@ -83,7 +83,7 @@ public class ZipFileSystem implements AbstractFileSystem
 			String[] path = FileSystemTools.decomposePath(e.getName());
 			TreeNodeTools.getOrCreatePath(ret, path, getNodeId, createNode).putEtc("ent", e);
 		}
-		
+		ret.putEtc("ent", new ZipEntry("/"));
 		return ret;
 	}
 	
