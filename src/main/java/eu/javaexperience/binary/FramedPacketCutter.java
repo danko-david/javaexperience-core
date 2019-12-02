@@ -26,6 +26,11 @@ public class FramedPacketCutter
 	boolean mayCut = false;
 	int ep = 0;
 	
+	public void clear()
+	{
+		ep = 0;
+	}
+	
 	public synchronized void feedBytes(byte[] data, int length)
 	{
 		boolean trace = LOG.mayLog(LogLevel.TRACE);
