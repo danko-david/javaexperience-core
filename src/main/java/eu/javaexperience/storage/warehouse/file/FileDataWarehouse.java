@@ -136,13 +136,13 @@ public class FileDataWarehouse implements DataWarehouse<byte[]>
 					}
 					
 					int read = 0;
-					if((read = fis.read(ret)) < 1)
+					if((read = fis.read(readBuff)) < 1)
 					{
 						//TODO or eof exception?
 						return null;
 					}
 					
-					cutter.feedBytes(ret, read);
+					cutter.feedBytes(readBuff, read);
 				}
 				while(true);
 			}

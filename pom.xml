@@ -4,7 +4,7 @@
 
 	<groupId>javaexperience</groupId>
 	<artifactId>core</artifactId>
-	<version>0.1.34</version>
+	<version>0.1.35</version>
 	<packaging>jar</packaging>
 
 	<name>core</name>
