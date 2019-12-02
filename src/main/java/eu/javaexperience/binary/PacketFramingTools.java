@@ -37,8 +37,8 @@ public class PacketFramingTools
 	public static byte[] frameBytes(byte[] data, byte terminator)
 	{
 		byte[] ret = optEscapeBytes(data, terminator, 2);
-		ret[data.length] = terminator;
-		ret[data.length+1] = (byte) ~terminator;
+		ret[ret.length-2] = terminator;
+		ret[ret.length-1] = (byte) ~terminator;
 		return ret;
 	}
 }
