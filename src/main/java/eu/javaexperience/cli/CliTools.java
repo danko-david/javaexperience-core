@@ -115,4 +115,11 @@ public class CliTools
 	{
 		return CLI_OPTIONS;
 	}
+	
+	public static void printHelpAndExit(String programName, int exitCode, CliEntry... entries)
+	{
+		System.err.println("Usage of "+programName+":\n");
+		System.err.println(CliTools.renderListAllOption(entries));
+		System.exit(exitCode);
+	}
 }
