@@ -11,6 +11,9 @@ import eu.javaexperience.collection.set.ArrayAsSetRO;
 import eu.javaexperience.interfaces.simple.publish.SimplePublish3;
 import eu.javaexperience.reflect.Mirror;
 
+/**
+ * TODO Refactor: use only one array instead of K and V
+ * */
 public class SmallMap<K,V> implements Map<K,V>, Cloneable, Serializable
 {
 	/**

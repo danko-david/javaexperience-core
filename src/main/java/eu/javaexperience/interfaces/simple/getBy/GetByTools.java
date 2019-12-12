@@ -3,11 +3,11 @@ package eu.javaexperience.interfaces.simple.getBy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
-import java.util.Properties;
 
 import eu.javaexperience.collection.enumerations.EnumTools;
 import eu.javaexperience.interfaces.simple.SimpleGet;
 import eu.javaexperience.reflect.Mirror;
+import eu.javaexperience.semantic.references.MayNull;
 
 public class GetByTools
 {
@@ -25,7 +25,7 @@ public class GetByTools
 		};
 	}
 	
-	public static <R,P> R tryGet(GetBy1<R, P> getBy, P param)
+	public static <R,P> R tryGet(@MayNull GetBy1<R, P> getBy, P param)
 	{
 		if(null == getBy)
 		{

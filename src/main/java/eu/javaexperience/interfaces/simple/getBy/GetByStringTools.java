@@ -2,6 +2,9 @@ package eu.javaexperience.interfaces.simple.getBy;
 
 import eu.javaexperience.text.StringTools;
 
+/**
+ * TODO Refactor: Drop this class amd move to StringFunctions
+ * */
 public class GetByStringTools
 {
 	public static final GetBy1<String,String> STRING_TOLOWERCASE = new GetBy1<String, String>()

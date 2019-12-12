@@ -37,6 +37,9 @@ public class Global
 		return prop.entrySet();
 	}
 	
+	/**
+	 * TODO Refactor: rename and move out this class
+	 * */
 	public static class LazySingletons
 	{
 		private LazySingletons(){}
