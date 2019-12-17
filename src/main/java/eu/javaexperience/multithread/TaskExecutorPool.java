@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
 
-public abstract class TaskExecutorPool implements Executor
+public class TaskExecutorPool implements Executor
 {
 	protected final Collection<RerunnableThread<Runnable>> execs = new ArrayList<>();
 	
