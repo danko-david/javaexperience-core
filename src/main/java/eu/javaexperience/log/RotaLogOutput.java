@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import eu.javaexperience.io.IOTools;
 import eu.javaexperience.resource.ReferenceCounted;
 
+//TODO maintainer: decompose class to fit this purpose and usage appears in UartbusLogFile
 public abstract class RotaLogOutput implements LogOutput
 {
 	protected abstract File getNextLogfile();

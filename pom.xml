@@ -4,7 +4,7 @@
 
 	<groupId>javaexperience</groupId>
 	<artifactId>core</artifactId>
-	<version>0.1.37</version>
+	<version>0.2</version>
 	<packaging>jar</packaging>
 
 	<name>core</name>
@@ -29,6 +29,14 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.25.2</version>
 			<scope>test</scope>
 		</dependency>
 	

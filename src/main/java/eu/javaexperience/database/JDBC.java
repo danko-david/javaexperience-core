@@ -1491,13 +1491,11 @@ public class JDBC
 		
 		sb.append(")");
 		
-		//sb.append("\nDEFAULT CHARACTER SET = utf8\nCOLLATE = utf8_bin;");
 		try
 		(
 				Statement st = conn.createStatement();
 		)
 		{
-			System.out.println(sb.toString());
 			return st.execute(sb.toString());
 		}
 	}
