@@ -198,33 +198,38 @@ public class SqlDatabase implements Database
 					{
 						try(ResultSet generatedKeys = ps.getGeneratedKeys())
 						{
-							if(generatedKeys.next())
+							if(null != id)
 							{
-								ResultSetMetaData md = generatedKeys.getMetaData();
-								int count = md.getColumnCount();
-								for(int i = 1;i <= count;++i)
+								if(generatedKeys.next())
 								{
-									String label = md.getColumnLabel(i);
-									Object vId = generatedKeys.getObject(i);
-									
-									if("GENERATED_KEY".equals(label))
+									ResultSetMetaData md = generatedKeys.getMetaData();
+									int count = md.getColumnCount();
+									for(int i = 1;i <= count;++i)
 									{
-										CastTo cast = CastTo.getCasterRestrictlyForTargetClass(id.getType());
-										if(null == vId)
-										{
-											throw new RuntimeException("No generated id returned after insertion: "+m);
-										}
+										String label = md.getColumnLabel(i);
+										Object vId = generatedKeys.getObject(i);
 										
-										if(null == cast)
+										//if("GENERATED_KEY".equals(label))
 										{
-											throw new RuntimeException("Unmanagable id type :"+id);
-										}
-										
-										Object set = cast.cast(vId);
-										
-										if(null == set)
-										{
-											throw new RuntimeException("Can't cast generated id for target type. id: "+vId+", field and type: "+id);
+											CastTo cast = CastTo.getCasterRestrictlyForTargetClass(id.getType());
+											if(null == vId)
+											{
+												throw new RuntimeException("No generated id returned after insertion: "+m);
+											}
+											
+											if(null == cast)
+											{
+												throw new RuntimeException("Unmanagable id type :"+id);
+											}
+											
+											Object set = cast.cast(vId);
+											
+											if(null == set)
+											{
+												throw new RuntimeException("Can't cast generated id for target type. id: "+vId+", field and type: "+id);
+											}
+											
+											id.set(m, set);
 										}
 									}
 								}

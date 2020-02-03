@@ -63,6 +63,8 @@ public abstract class UsualDbModelTest
 			u.disabled = false;
 			u.created_at = now;
 			db.insert(u);
+			
+			assertEquals(1, u.id);
 		}
 		
 		List<User> us = db.getWhere(User.class, "");
@@ -97,6 +99,8 @@ public abstract class UsualDbModelTest
 			u.disabled = false;
 			u.created_at = now;
 			db.insert(u);
+			
+			assertEquals(12, u.id);
 		}
 		
 		List<User> us = db.getWhere(User.class, null);
@@ -173,8 +177,10 @@ public abstract class UsualDbModelTest
 			u.email = "info@dankodavid.hu";
 			u.extra_data = "{\"born_time\":708306900000}";
 			u.disabled = false;
+			
 			u.created_at = now;
 			db.insert(u);
+			assertEquals(1, u.id);
 		}
 
 		//alter table, get model
