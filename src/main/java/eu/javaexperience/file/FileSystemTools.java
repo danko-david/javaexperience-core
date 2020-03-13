@@ -1,12 +1,19 @@
 package eu.javaexperience.file;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import eu.javaexperience.arrays.ArrayTools;
 import eu.javaexperience.file.fs.classloader.ClassLoaderFileSystem;
 import eu.javaexperience.file.fs.os.OsFile;
 import eu.javaexperience.file.fs.os.OsFileSystem;
+import eu.javaexperience.file.fs.os.dir.OsDirectoryFilesystem;
+import eu.javaexperience.file.fs.zip.ZipFileSystem;
 import eu.javaexperience.regex.RegexTools;
 
 public class FileSystemTools
@@ -56,4 +63,41 @@ public class FileSystemTools
 		}
 	}
 	
+	protected static List<AbstractFileSystem> collectJavaClassPathFileSystems()
+	{
+		ArrayList<AbstractFileSystem> ret = new ArrayList<>();
+		
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		if(cl instanceof URLClassLoader)
+		{
+			URL[] urls = ((URLClassLoader)cl).getURLs();
+	
+			for(URL url: urls)
+			{
+				File f = new File(url.getFile());
+				if(f.exists())
+				{
+					try
+					{
+						if(f.toString().endsWith(".jar"))
+						{
+							ret.add(new ZipFileSystem(f.toString()));
+						}
+						else
+						{
+							ret.add(new OsDirectoryFilesystem(f));
+						}
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		//ret.add(FileSystemTools.SYSTEM_CLASSLOADER_FILESYSTEM);
+		//ret.add(FileSystemTools.DEFAULT_FILESYSTEM);
+		return ret;
+	}
 }

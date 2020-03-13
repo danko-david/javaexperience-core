@@ -1,7 +1,11 @@
 package eu.javaexperience.collection.map;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import eu.javaexperience.interfaces.simple.SimpleGet;
+import eu.javaexperience.interfaces.simple.SimpleGetFactory;
 
 public class TransactionMap<K, V> extends AbstractMap<K, V>
 {
@@ -16,11 +20,16 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 	
 	public TransactionMap(Map<K, V> origin)
 	{
+		this(origin, (SimpleGet) SimpleGetFactory.getSmallMapFactory());
+	}
+	
+	public TransactionMap(Map<K, V> origin, SimpleGet<Map> mapCreator)
+	{
 		this.origin = origin;
 		
-		this.diff = new SmallMap<>();
-		this.access = new SmallMap<>();
-		this.contains = new SmallMap<>();
+		this.diff = mapCreator.get();
+		this.access = mapCreator.get();
+		this.contains = mapCreator.get();
 		
 		this.modifiable = new ChainedMap<>(diff, access, origin);
 	}
@@ -76,6 +85,34 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 			access.put(key, re);
 			return (V) re;
 		}
+	}
+	
+	protected Set<Entry<K, V>> touchValues(Set<Entry<K, V>> kvs)
+	{
+		Set<Entry<K, V>> ret = new HashSet<>();
+		for(Entry<K, V> kv:kvs)
+		{
+			K key = kv.getKey();
+			Object in = kv.getValue();
+			if(null != in)
+			{
+				in = modifiable.get(key);
+				if(NULL_VALUE == in)
+				{
+					access.remove(key);
+					//ret.add(new KeyVal(key, null));
+					continue;
+				}
+				else
+				{
+					access.put(key, (V)in);
+					ret.add(new KeyVal(key, in));
+					continue;
+				}
+			}
+		}
+		
+		return ret;
 	}
 	
 	@Override
@@ -150,5 +187,11 @@ public class TransactionMap<K, V> extends AbstractMap<K, V>
 		}
 		return ret;
 	}
-
+	
+	@Override
+	public Set<Entry<K, V>> entrySet()
+	{
+		Set<Entry<K, V>> ents = modifiable.entrySet();
+		return touchValues(ents);
+	}
 }

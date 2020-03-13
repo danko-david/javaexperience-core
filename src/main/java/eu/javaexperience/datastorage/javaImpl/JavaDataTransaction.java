@@ -8,6 +8,8 @@ import java.util.Set;
 import eu.javaexperience.collection.map.TransactionMap;
 import eu.javaexperience.datastorage.DataTransaction;
 import eu.javaexperience.datastorage.TransactionException;
+import eu.javaexperience.interfaces.simple.SimpleGet;
+import eu.javaexperience.interfaces.simple.SimpleGetFactory;
 import eu.javaexperience.reflect.Mirror;
 
 public class JavaDataTransaction implements DataTransaction
@@ -16,7 +18,12 @@ public class JavaDataTransaction implements DataTransaction
 	
 	public JavaDataTransaction(Map<String, Object> origin)
 	{
-		transactionMap = new TransactionMap<String, Object>(origin);
+		this(origin, (SimpleGet) SimpleGetFactory.getSmallMapFactory());
+	}
+	
+	public JavaDataTransaction(Map<String, Object> origin, SimpleGet<Map> backendMapCreator)
+	{
+		transactionMap = new TransactionMap<String, Object>(origin, backendMapCreator);
 	}
 	
 	protected boolean closed = false;

@@ -97,4 +97,20 @@ public class MappedMap<K, V> extends AbstractMap<K, V> implements Map<K, V>
 		}
 		return keys;
 	}
+	
+	@Override
+	public Set<Entry<K, V>> entrySet()
+	{
+		HashSet<Entry<K, V>> ret = new HashSet<>();
+		for(Entry<K, V> kv:map.entrySet())
+		{
+			K k = mapper.unwrap(kv.getKey());
+			if(null != k)
+			{
+				ret.add(new KeyVal<>(k, kv.getValue()));
+			}
+		}
+		
+		return ret;
+	}
 }
