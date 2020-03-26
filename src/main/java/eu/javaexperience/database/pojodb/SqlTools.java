@@ -210,7 +210,11 @@ public class SqlTools
 						continue out;
 					}
 				}
-				toAdd.add(fd);
+				
+				if(null != dialect.getSqlType(fd))
+				{
+					toAdd.add(fd);
+				}
 			}
 			
 			if(toAdd.size() > 0)
