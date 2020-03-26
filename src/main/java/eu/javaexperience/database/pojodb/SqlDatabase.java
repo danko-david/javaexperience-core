@@ -41,34 +41,48 @@ public class SqlDatabase implements Database
 		return getInstance(cls, "id", id);
 	}
 	
+	
 	public <T extends Model> T getInstance(Class<T> cls, String field, Object id) throws SQLException, InstantiationException, IllegalAccessException
 	{
 		T ret = cls.newInstance();
+		if(loadInstance(ret, field, id))
+		{
+			return ret;
+		}
+		return null;
+	}
+	public <T extends Model> boolean loadInstance(T model, String field, Object id) throws SQLException, InstantiationException, IllegalAccessException
+	{
 		try(Connection conn = pool.getConnection())
 		{
-			try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM `"+ret.getTable()+"` WHERE `"+field+"`= ?"))
+			try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM `"+model.getTable()+"` WHERE `"+field+"`= ?"))
 			{
 				ps.setObject(1, id);
 				ResultSet rs = ps.executeQuery();
 				if(!rs.next())
 				{
-					return null;
+					return false;
 				}
 				else
 				{
-					JDBC.simpleReadIntoJavaObject(rs, ret.getFields(), ret);
+					JDBC.simpleReadIntoJavaObject(rs, model.getFields(), model);
 				}
 			}
 		}
-		return ret;
+		return true;
 	}
 	
 	public <T extends Model> List<T> getWhere(Class<T> cls, @MayNull String where, Object... values) throws SQLException, InstantiationException, IllegalAccessException
 	{
 		T obj = cls.newInstance();
+		return getWhereTable(cls, obj.getTable(), where, values);
+	}
+	
+	public <T extends Model> List<T> getWhereTable(Class<T> cls, String table, @MayNull String where, Object... values) throws SQLException, InstantiationException, IllegalAccessException
+	{
 		List<T> ret = new ArrayList<>();
 		String quote = dialect.getFieldQuoteString();
-		getInstances(cls, ret, "SELECT * FROM "+quote+obj.getTable()+quote+(StringTools.isNullOrTrimEmpty(where)?"":"WHERE "+where), values);
+		getInstances(cls, ret, "SELECT * FROM "+quote+table+quote+(StringTools.isNullOrTrimEmpty(where)?"":"WHERE "+where), values);
 		return ret;
 	}
 	
@@ -314,16 +328,33 @@ public class SqlDatabase implements Database
 
 	public <T extends Model> void ensureTable(Class<T> model) throws SQLException
 	{
+		try
+		{
+			ensureTable(model.newInstance());
+		}
+		catch(Exception e)
+		{
+			Mirror.propagateAnyway(e);
+		}
+	}
+	
+	public <T extends Model> void ensureTable(T model) throws SQLException
+	{
 		try(Connection conn = pool.getConnection())
 		{
 			try
 			{
-				SqlTools.alterTableAddFields(conn, model.newInstance(), dialect);
+				SqlTools.alterTableAddFields(conn, model, dialect);
 			}
 			catch(Exception e)
 			{
 				Mirror.propagateAnyway(e);
 			}
 		}
+	}
+	
+	public SqlDialect getDialect()
+	{
+		return dialect;
 	}
 }

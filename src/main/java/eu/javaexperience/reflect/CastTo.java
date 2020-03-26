@@ -33,8 +33,15 @@ public enum CastTo implements NotatedCaster
 				return null;
 			}
 			
+			/**
+			 * Why cast to boolean?
+			 * A wird bug in the Java' serialisation mechansim:
+			 * Deserailised Booleans are not one of Boolean.TRUE or Boolean.FALSE
+			 * So Boolean.TRUE == ...expression... will fail even at a deserialised true value.
+			 * This cast forces to use the Boolean.{VALUE} instances.
+			 * */
 			if(o instanceof Boolean)
-				return o;
+				return (boolean) o;
 			
 			if(o instanceof Number)
 				return ((Number)o).longValue() != 0;
