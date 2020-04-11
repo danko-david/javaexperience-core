@@ -21,7 +21,9 @@ public class ProxyDataWrapperTools
 {
 	public static <W, R> W wrapAccessor(final R rootObject, Class<W> rootWrapperInterface, final GetBy3<Object, R, Method, Object[]> mapper)
 	{
-		return (W) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{rootWrapperInterface}, new InvocationHandler()
+		ClassLoader cl = //ClassLoader.getSystemClassLoader();
+				Thread.currentThread().getContextClassLoader();
+		return (W) Proxy.newProxyInstance(cl, new Class[]{rootWrapperInterface}, new InvocationHandler()
 		{
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
