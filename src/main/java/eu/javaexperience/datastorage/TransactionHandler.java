@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import eu.javaexperience.reflect.Mirror;
 
-public abstract class TransactionHandler
+public abstract class TransactionHandler<T>
 {
 	protected int retry;
 	protected DataStorage storage;
@@ -17,9 +17,9 @@ public abstract class TransactionHandler
 		this.retry = retry;
 	}
 	
-	protected abstract void doExecute(DataTransaction tr) throws Exception;
+	protected abstract T doExecute(DataTransaction tr) throws Exception;
 	
-	public void execute()
+	public T execute()
 	{
 		int retryCount = 0;
 		do
@@ -27,9 +27,9 @@ public abstract class TransactionHandler
 			DataTransaction tr = storage.startTransaction(key);
 			try
 			{
-				doExecute(tr);
+				T ret = doExecute(tr);
 				tr.commit();
-				return;
+				return ret;
 			}
 			catch(TransactionException ex)
 			{
