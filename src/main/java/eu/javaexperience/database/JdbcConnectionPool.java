@@ -1,18 +1,21 @@
 package eu.javaexperience.database;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import eu.javaexperience.asserts.AssertArgument;
 import eu.javaexperience.database.failsafe.JdbcFailSafeConnection;
+import eu.javaexperience.io.IOTools;
 import eu.javaexperience.log.JavaExperienceLoggingFacility;
 import eu.javaexperience.log.LogLevel;
 import eu.javaexperience.log.Loggable;
 import eu.javaexperience.log.Logger;
 import eu.javaexperience.log.LoggingTools;
 
-public class JdbcConnectionPool implements ConnectionPool
+public class JdbcConnectionPool implements ConnectionPool, Closeable
 {
 	public static final Logger LOG = JavaExperienceLoggingFacility.getLogger(new Loggable("JdbcConnectionPool"));
 	
@@ -90,5 +93,15 @@ public class JdbcConnectionPool implements ConnectionPool
 	protected Connection openNewConnection() throws SQLException
 	{
 		return new JdbcFailSafeConnection(cc, 3);
+	}
+
+	@Override
+	public synchronized void close() throws IOException
+	{
+		cc = null;
+		for(ConnectionData d:pool)
+		{
+			IOTools.silentClose(d.conn);
+		}
 	}
 }

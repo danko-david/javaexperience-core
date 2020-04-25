@@ -296,6 +296,16 @@ public class IOTools
 		{}
 	}
 	
+	public static void silentClose(AutoCloseable is)
+	{
+		try
+		{
+			is.close();
+		}
+		catch(Throwable e)
+		{}
+	}
+	
 	public static int writeInputStreamToFile(InputStream is,String file) throws IOException
 	{
 		try(FileOutputStream fos = new FileOutputStream(file))

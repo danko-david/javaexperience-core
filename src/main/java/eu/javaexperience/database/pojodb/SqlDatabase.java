@@ -1,5 +1,7 @@
 package eu.javaexperience.database.pojodb;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +22,7 @@ import eu.javaexperience.reflect.Mirror;
 import eu.javaexperience.semantic.references.MayNull;
 import eu.javaexperience.text.StringTools;
 
-public class SqlDatabase implements Database
+public class SqlDatabase implements Database, Closeable
 {
 	protected ConnectionCreator cc;
 	
@@ -356,5 +358,11 @@ public class SqlDatabase implements Database
 	public SqlDialect getDialect()
 	{
 		return dialect;
+	}
+
+	@Override
+	public void close() throws IOException
+	{
+		pool.close();
 	}
 }
