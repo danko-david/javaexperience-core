@@ -78,14 +78,7 @@ public class SqlTools
 						sb.append("!");
 					
 					sb.append("= ");
-					if(c.getValue() instanceof String)
-					{
-						sb.append(strQuote);
-						sb.append(dialect.toQueryString(c.getValue()));
-						sb.append(strQuote);
-					}
-					else
-						sb.append(dialect.toQueryString(c.getValue()));
+					sb.append(dialect.toQueryString(c.getValue()));
 				}
 				break;
 				
