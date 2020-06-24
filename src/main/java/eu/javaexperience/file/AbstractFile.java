@@ -1,6 +1,5 @@
 package eu.javaexperience.file;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,6 +20,8 @@ public interface AbstractFile
 	public boolean delete() throws IOException;
 	public long lastModified();
 	public boolean setLastModified(long time) throws IOException;
+	
+	public long createTime();
 	
 	public boolean exists();
 	

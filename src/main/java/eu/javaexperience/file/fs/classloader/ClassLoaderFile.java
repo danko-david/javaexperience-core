@@ -202,4 +202,10 @@ public class ClassLoaderFile implements AbstractFile
 		}
 		return new OsFile(f.getParentFile());
 	}
+
+	@Override
+	public long createTime()
+	{
+		return 0;
+	}
 }

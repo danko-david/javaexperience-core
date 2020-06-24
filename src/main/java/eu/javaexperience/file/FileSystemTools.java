@@ -63,7 +63,7 @@ public class FileSystemTools
 		}
 	}
 	
-	protected static List<AbstractFileSystem> collectJavaClassPathFileSystems()
+	public static List<AbstractFileSystem> collectJavaClassPathFileSystems()
 	{
 		ArrayList<AbstractFileSystem> ret = new ArrayList<>();
 		

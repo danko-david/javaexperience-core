@@ -241,4 +241,10 @@ public class ZipFsFile implements AbstractFile
 	{
 		return "FipFsFile: `"+file+"` in `"+fs.file+"`";
 	}
+
+	@Override
+	public long createTime()
+	{
+		return ent.getCreationTime().toMillis();
+	}
 }

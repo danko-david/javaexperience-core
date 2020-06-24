@@ -134,4 +134,10 @@ public class JavaPackageFile implements AbstractFile
 		return null;
 	}
 
+	@Override
+	public long createTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -216,4 +216,10 @@ public class OsDirectoryFile implements AbstractFile
 		
 		return new OsDirectoryFile(dfs, f);
 	}
+
+	@Override
+	public long createTime()
+	{
+		return 0;
+	}
 }

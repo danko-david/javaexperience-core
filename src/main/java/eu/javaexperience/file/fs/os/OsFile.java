@@ -197,4 +197,10 @@ public class OsFile implements AbstractFile
 	{
 		return file;
 	}
+
+	@Override
+	public long createTime()
+	{
+		return 0;
+	}
 }
