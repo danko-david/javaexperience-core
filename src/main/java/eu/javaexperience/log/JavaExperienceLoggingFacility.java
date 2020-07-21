@@ -51,7 +51,7 @@ public class JavaExperienceLoggingFacility
 		@Override
 		public ReferenceCounted<PrintWriter> getLogOutput() throws IOException
 		{
-			PrintWriter lpw = new LocklessPrintWriter(IOTools.nullOutputStream, false)
+			PrintWriter lpw = new PrintWriter(IOTools.nullOutputStream, false)
 			{
 				@Override
 				public void write(char[] csq, int start, int end)

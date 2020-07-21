@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import eu.javaexperience.database.ConnectionBuilder;
 import eu.javaexperience.database.ConnectionCreator;
 import eu.javaexperience.database.JDBC;
 import eu.javaexperience.database.JdbcConnectionPool;
 import eu.javaexperience.database.pojodb.dialect.SqlDialect;
+import eu.javaexperience.query.LogicalGroup;
 import eu.javaexperience.reflect.CastTo;
 import eu.javaexperience.reflect.Mirror;
 import eu.javaexperience.semantic.references.MayNull;
@@ -88,6 +90,17 @@ public class SqlDatabase implements Database, Closeable
 		return ret;
 	}
 	
+	public <T extends Model> List<T> getWhereTable(Class<T> cls, String table, LogicalGroup condition) throws InstantiationException, IllegalAccessException, SQLException
+	{
+		StringBuilder sb = new StringBuilder();
+		SqlTools.buildQuery(sb, condition, dialect);
+		return getWhereTable(cls, table, sb.toString());
+	}
+	
+	public <T extends Model> List<T> getWhere(Class<T> cls, String table, LogicalGroup condition) throws InstantiationException, IllegalAccessException, SQLException
+	{
+		return getWhereTable(cls, cls.newInstance().getTable(), condition);
+	}
 	public <T extends Model> int getInstances(Class<T> cls, Collection<T> dst, String query, Object... values) throws SQLException, InstantiationException, IllegalAccessException
 	{
 		T ret = cls.newInstance();
@@ -359,7 +372,33 @@ public class SqlDatabase implements Database, Closeable
 	{
 		return dialect;
 	}
-
+	
+	public static SqlDatabase openDatabase
+	(
+		SqlDialect dialect,
+		ConnectionBuilder type,
+		String host,
+		int port,
+		String username,
+		String password,
+		String database
+	)
+	{
+		return new SqlDatabase
+		(
+			ConnectionCreator.fromConnectionBuilder
+			(
+				type,
+				host,
+				port,
+				username,
+				password,
+				database
+			),
+			dialect
+		);
+	}
+	
 	@Override
 	public void close() throws IOException
 	{
