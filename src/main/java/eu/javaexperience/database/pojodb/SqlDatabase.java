@@ -97,7 +97,7 @@ public class SqlDatabase implements Database, Closeable
 		return getWhereTable(cls, table, sb.toString());
 	}
 	
-	public <T extends Model> List<T> getWhere(Class<T> cls, String table, LogicalGroup condition) throws InstantiationException, IllegalAccessException, SQLException
+	public <T extends Model> List<T> getWhere(Class<T> cls, LogicalGroup condition) throws InstantiationException, IllegalAccessException, SQLException
 	{
 		return getWhereTable(cls, cls.newInstance().getTable(), condition);
 	}
