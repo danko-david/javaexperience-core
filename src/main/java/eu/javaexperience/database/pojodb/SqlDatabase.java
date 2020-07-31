@@ -93,7 +93,10 @@ public class SqlDatabase implements Database, Closeable
 	public <T extends Model> List<T> getWhereTable(Class<T> cls, String table, LogicalGroup condition) throws InstantiationException, IllegalAccessException, SQLException
 	{
 		StringBuilder sb = new StringBuilder();
-		SqlTools.buildQuery(sb, condition, dialect);
+		if(null != condition)
+		{
+			SqlTools.buildQuery(sb, condition, dialect);
+		}
 		return getWhereTable(cls, table, sb.toString());
 	}
 	
