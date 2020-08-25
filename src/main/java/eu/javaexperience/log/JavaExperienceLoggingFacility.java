@@ -46,12 +46,13 @@ public class JavaExperienceLoggingFacility
 		return DEFAULT_LEVEL;
 	}
 	
+	//TODO this logging stuff need a refactor, until move back to LocklessPrintWriter and with it's newline error
 	protected static LoggerProvider JEX = new LoggerProvider(new LogOutput()
 	{
 		@Override
 		public ReferenceCounted<PrintWriter> getLogOutput() throws IOException
 		{
-			PrintWriter lpw = new PrintWriter(IOTools.nullOutputStream, false)
+			PrintWriter lpw = new LocklessPrintWriter(IOTools.nullOutputStream, false)
 			{
 				@Override
 				public void write(char[] csq, int start, int end)
@@ -186,6 +187,18 @@ public class JavaExperienceLoggingFacility
 			STD_OUT_LOG_ADDED = true;
 			addLogOutput(LoggingTools.STDOUT_LOG_OUTPUT);
 			LoggingTools.tryLogSimple(LOG, getDefaultLogLevel(), "JavaExperienceLoggingFacility.addStdOut() called");
+		}
+	}
+	
+	protected static boolean STD_ERR_LOG_ADDED = false;
+	
+	public static synchronized void addStdErr()
+	{
+		if(!STD_ERR_LOG_ADDED)
+		{
+			STD_ERR_LOG_ADDED = true;
+			addLogOutput(LoggingTools.STDERR_LOG_OUTPUT);
+			LoggingTools.tryLogSimple(LOG, getDefaultLogLevel(), "JavaExperienceLoggingFacility.addStdErr() called");
 		}
 	}
 	
@@ -326,5 +339,12 @@ public class JavaExperienceLoggingFacility
 		}
 		
 		addLogOutput(new DayliLogrotaOutput(directory+"/"+prefix));
+	}
+	
+	public static void main(String[] args)
+	{
+		System.err.println("StdErr");
+		JavaExperienceLoggingFacility.addStdErr();
+		LoggingTools.tryLogFormat(LOG, LogLevel.INFO, "Test: `%s`", "value");
 	}
 }

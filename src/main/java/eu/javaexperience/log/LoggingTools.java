@@ -1,6 +1,7 @@
 package eu.javaexperience.log;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
@@ -24,18 +25,30 @@ import eu.javaexperience.text.DontCareFieldPosition;
  * */
 public class LoggingTools
 {
-	public static final LogOutput STDOUT_LOG_OUTPUT = new LogOutput()
+	public static final LogOutput STDOUT_LOG_OUTPUT = wrapPrintStream(System.out);
+	
+	public static final LogOutput STDERR_LOG_OUTPUT = wrapPrintStream(System.err);
+	
+	public static LogOutput wrapPrintWriter(PrintWriter pw)
 	{
-		@Override
-		public ReferenceCounted<PrintWriter> getLogOutput() throws IOException
+		return wrapPrintWriter(pw);
+	}
+	
+	public static LogOutput wrapPrintStream(PrintStream ps)
+	{
+		return new LogOutput()
 		{
-			return new ReferenceCounted<PrintWriter>(new PrintWriter(System.out), 2)
+			@Override
+			public ReferenceCounted<PrintWriter> getLogOutput() throws IOException
 			{
-				@Override
-				protected void onFree(){/*nop*/}
-			};
-		}
-	};
+				return new ReferenceCounted<PrintWriter>(new PrintWriter(ps, true), 2)
+				{
+					@Override
+					protected void onFree(){/*nop*/}
+				};
+			}
+		};	
+	}
 	
 	protected static final class LogFormattingTools
 	{
