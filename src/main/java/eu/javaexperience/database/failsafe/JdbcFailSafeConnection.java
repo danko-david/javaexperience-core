@@ -26,6 +26,7 @@ import java.util.concurrent.Executor;
 
 import eu.javaexperience.database.ConnectionBuilder;
 import eu.javaexperience.database.ConnectionCreator;
+import eu.javaexperience.io.IOTools;
 import eu.javaexperience.log.JavaExperienceLoggingFacility;
 import eu.javaexperience.log.LogLevel;
 import eu.javaexperience.log.Loggable;
@@ -60,6 +61,7 @@ public class JdbcFailSafeConnection implements Connection
 		{
 			tryLogFormatException(JdbcFailSafeConnection.LOG, LogLevel.WARNING, t, "void JdbcFailSafeConnection.reconnect()");
 		}
+		IOTools.silentClose(conn);
 		conn = createNewConnection();
 	}
 	
