@@ -42,6 +42,12 @@ import eu.javaexperience.text.StringTools;
 
 public class Mirror
 {
+	protected static class MirrorLogger
+	{
+		//initialize as last, beacuse it can cause initialization loop error
+		protected static final Logger LOG = JavaExperienceLoggingFacility.getLogger(new Loggable("Mirror"));
+	}
+	
 	private Mirror(){}
 	
 	public static final Object undefined = new Object();
@@ -189,7 +195,7 @@ public class Mirror
 		}
 		catch(Exception e)
 		{
-			LoggingTools.tryLogFormat(LOG, LogLevel.DEBUG, "Exception while collecting ClassData about class `%s`", cls);
+			LoggingTools.tryLogFormat(MirrorLogger.LOG, LogLevel.DEBUG, "Exception while collecting ClassData about class `%s`", cls);
 		}
 		return null;
 	}
@@ -746,9 +752,9 @@ public class Mirror
 				}
 				catch (Exception e)
 				{
-					if(LOG.mayLog(LogLevel.DEBUG))
+					if(MirrorLogger.LOG.mayLog(LogLevel.DEBUG))
 					{
-						LoggingTools.tryLogFormat(LOG, LogLevel.DEBUG, "Exception while invoking fillMapIntoObject(`%s`, `%s`)", map, o);
+						LoggingTools.tryLogFormat(MirrorLogger.LOG, LogLevel.DEBUG, "Exception while invoking fillMapIntoObject(`%s`, `%s`)", map, o);
 					}
 				}
 	}
@@ -772,7 +778,10 @@ public class Mirror
 					}
 					catch (Exception e)
 					{
-						LoggingTools.tryLogFormat(LOG, LogLevel.DEBUG, "Exception while invoking tryFillMapIntoObjectCast(`%s`, `%s`)", map, o);
+						if(MirrorLogger.LOG.mayLog(LogLevel.DEBUG))
+						{
+							LoggingTools.tryLogFormat(MirrorLogger.LOG, LogLevel.DEBUG, "Exception while invoking tryFillMapIntoObjectCast(`%s`, `%s`)", map, o);
+						}
 					}
 				}
 			}
@@ -1826,7 +1835,4 @@ public class Mirror
 			return null;
 		}
 	}
-	
-	//initialize as last, beacuse it can cause initialization loop error
-	protected static final Logger LOG = JavaExperienceLoggingFacility.getLogger(new Loggable("Mirror"));
 }
