@@ -31,12 +31,19 @@ import eu.javaexperience.collection.map.MapTools;
 import eu.javaexperience.interfaces.simple.getBy.GetBy1;
 import eu.javaexperience.interfaces.simple.getBy.GetBy2;
 import eu.javaexperience.io.IOTools;
+import eu.javaexperience.log.JavaExperienceLoggingFacility;
+import eu.javaexperience.log.LogLevel;
+import eu.javaexperience.log.Loggable;
+import eu.javaexperience.log.Logger;
+import eu.javaexperience.log.LoggingTools;
 import eu.javaexperience.semantic.references.MayNotNull;
 import eu.javaexperience.text.Format;
 import eu.javaexperience.text.StringTools;
 
 public class Mirror
 {
+	protected static final Logger LOG = JavaExperienceLoggingFacility.getLogger(new Loggable("Mirror"));
+	
 	private Mirror(){}
 	
 	public static final Object undefined = new Object();
@@ -182,7 +189,10 @@ public class Mirror
 				}
 			}
 		}
-		catch(Exception e){}
+		catch(Exception e)
+		{
+			LoggingTools.tryLogFormat(LOG, LogLevel.DEBUG, "Exception while collecting ClassData about class `%s`", cls);
+		}
 		return null;
 	}
 	
@@ -736,7 +746,13 @@ public class Mirror
 				{
 					f.set(o, map.get(f.getName()));
 				}
-				catch (Exception e){}
+				catch (Exception e)
+				{
+					if(LOG.mayLog(LogLevel.DEBUG))
+					{
+						LoggingTools.tryLogFormat(LOG, LogLevel.DEBUG, "Exception while invoking fillMapIntoObject(`%s`, `%s`)", map, o);
+					}
+				}
 	}
 	
 	public static void tryFillMapIntoObjectCast(Map<String,Object> map, Object o)
@@ -756,7 +772,10 @@ public class Mirror
 					{
 						f.set(o, set);
 					}
-					catch (Exception e){}
+					catch (Exception e)
+					{
+						LoggingTools.tryLogFormat(LOG, LogLevel.DEBUG, "Exception while invoking tryFillMapIntoObjectCast(`%s`, `%s`)", map, o);
+					}
 				}
 			}
 		}
