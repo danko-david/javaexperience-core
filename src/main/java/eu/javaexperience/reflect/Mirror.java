@@ -42,8 +42,6 @@ import eu.javaexperience.text.StringTools;
 
 public class Mirror
 {
-	protected static final Logger LOG = JavaExperienceLoggingFacility.getLogger(new Loggable("Mirror"));
-	
 	private Mirror(){}
 	
 	public static final Object undefined = new Object();
@@ -1828,4 +1826,7 @@ public class Mirror
 			return null;
 		}
 	}
+	
+	//initialize as last, beacuse it can cause initialization loop error
+	protected static final Logger LOG = JavaExperienceLoggingFacility.getLogger(new Loggable("Mirror"));
 }
