@@ -1835,4 +1835,20 @@ public class Mirror
 			return null;
 		}
 	}
+	
+	protected static class CheckedExceptionUncheckedThrowHelper<T extends Throwable>
+	{
+		public void doThrow(Throwable t) throws T
+		{
+			throw (T) t;
+		}
+	}
+	
+	protected static CheckedExceptionUncheckedThrowHelper THROW_HELPER = new CheckedExceptionUncheckedThrowHelper();
+	
+	//one of the java's nasties hacks, i love it!. it's so broken and so cute
+	public static void throwCheckedExceptionAsUnchecked(Throwable t)
+	{
+		((CheckedExceptionUncheckedThrowHelper<RuntimeException>)THROW_HELPER).doThrow(t);
+	}
 }

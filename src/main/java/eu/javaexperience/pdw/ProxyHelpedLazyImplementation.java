@@ -68,12 +68,17 @@ public abstract class ProxyHelpedLazyImplementation<I, B extends I, R extends I>
 		}
 		catch(Throwable e)
 		{
-			Mirror.propagateAnyway(e);
+			handleException(e);
 			return null;
 		}
 	};
 
 	public abstract Object handleInterfaceCall(B root, Method method, Object[] params) throws Throwable;
+
+	protected void handleException(Throwable e)
+	{
+		Mirror.propagateAnyway(e);
+	}
 
 	public <T extends I> T createInstanceWithDefaultConstructor(Class<T> cls, B zkp) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
 	{
