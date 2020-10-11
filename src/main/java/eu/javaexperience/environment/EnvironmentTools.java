@@ -21,7 +21,7 @@ public class EnvironmentTools
 		}
 	}
 	
-	//TODO that's a platform specific stuff
+	//TODO that's a platform specific stuff test on other operation system eg.: on windows
 	public static int getCurrentProcessPid()
 	{
 		//this assumes that we are under linux
@@ -50,6 +50,11 @@ public class EnvironmentTools
 		catch(Exception e){}
 		
 		throw new RuntimeException("Can't determine current process pid");
+	}
+	
+	public static boolean isJvmInDebugMode()
+	{
+		return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
 	}
 
 	public static String getOperationSystemType()
