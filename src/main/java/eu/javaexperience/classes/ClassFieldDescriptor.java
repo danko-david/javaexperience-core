@@ -1,5 +1,7 @@
 package eu.javaexperience.classes;
 
+import java.util.List;
+
 public interface ClassFieldDescriptor
 {
 	public ClassDescriptor getOwnerModel();
@@ -17,5 +19,5 @@ public interface ClassFieldDescriptor
 
 	public int getModifiers();
 
-	public ClassAnnotationDescriptor[] getAnnotations();
+	public List<ClassAnnotationDescriptor> getAnnotations();
 }

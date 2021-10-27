@@ -39,6 +39,8 @@ public class ClassDescriptorTools
 		CLASS_PROPS.addExaminer("isAbstract", (e)->Modifier.isAbstract(e.getModifiers()));
 		CLASS_PROPS.addExaminer("modifiers", (e)->e.getModifiers());
 		CLASS_PROPS.addExaminer("fields", (e)->e.getAllField());
+		CLASS_PROPS.addExaminer("annotations", (e)->e.getAnnotations());
+		
 		//TODO annontations
 		
 		
@@ -46,19 +48,7 @@ public class ClassDescriptorTools
 		FIELD_PROPS.addExaminer("declaringClass", (f)->f.getOwnerModel().getClassName());
 		FIELD_PROPS.addExaminer("type", (f)->f.getType().getClassName());
 		FIELD_PROPS.addExaminer("modifiers", (f)->f.getModifiers());
-		FIELD_PROPS.addExaminer("annotations", (f)->wrapAnnotations(f));
-	}
-	
-	protected static Object wrapAnnotations(ClassFieldDescriptor f)
-	{
-		/*TODO if(f instanceof JavaClassField)
-		{
-			JavaClassField cfd = (JavaClassField) f;
-			return null;
-			//TODO ClassAnnotationDescriptor.wrap(cfd.getJavaField().getAnnotations());
-		}
-		*/
-		return null;
+		FIELD_PROPS.addExaminer("annotations", (f)->f.getAnnotations());
 	}
 	
 	protected static Object wrapEnums(EnumManager enumManager)

@@ -20,4 +20,5 @@ public interface ClassDescriptor
 	
 	public ClassSpace getClassSpace();
 	public void setClassSpace(ClassSpace classSpace);
+	public List<ClassAnnotationDescriptor> getAnnotations();
 }
