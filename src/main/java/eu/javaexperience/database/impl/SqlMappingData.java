@@ -4,8 +4,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import eu.javaexperience.arrays.ArrayTools;
 import eu.javaexperience.collection.map.SmallMap;
-import eu.javaexperience.database.JDBC;
 import eu.javaexperience.database.jdbc.Id;
 import eu.javaexperience.database.pojodb.Model;
 import eu.javaexperience.reflect.Mirror;
@@ -39,8 +39,24 @@ public class SqlMappingData
 	
 	protected static Field[] selectFields(Class cls)
 	{
-		return Mirror.getClassData(cls)
+		Field[] fs = Mirror.getClassData(cls)
 				.selectFields(new FieldSelector(true, Visibility.All, BelongTo.Instance, Select.All, Select.IsNot, Select.All));
+		
+		for(int i=0;i<fs.length;++i)
+		{
+			Field f = fs[i];
+			if
+			(
+					null != f.getAnnotation(eu.javaexperience.database.annotations.Ignore.class)
+				||
+					null != f.getAnnotation(eu.javaexperience.generic.annotations.Ignore.class)
+			)
+			{
+				fs[i] = null;
+			}
+		}
+		
+		return ArrayTools.withoutNulls(fs);
 	}
 	
 	public static SqlMappingData getOrCreateMapping(Model m)
@@ -60,11 +76,6 @@ public class SqlMappingData
 					map.id = fd;
 				}
 			}
-			
-			/*if(null == map.id)
-			{
-				throw new RuntimeException("Can't identify the field used as ID. Use a field named as id or use the @Id annotation.");
-			}*/
 			
 			MAPPING.put(map.cls, map);
 		}
