@@ -40,7 +40,7 @@ public class MysqlDialect implements SqlDialect
 			{
 				String versionCommentString = JDBC.getString(conn, "SELECT @@version_comment");
 				versionCommentString = versionCommentString.toLowerCase();
-				if(versionCommentString.contains("debian"))
+				if(versionCommentString.contains("debian")  || versionCommentString.contains("mysql") || versionCommentString.contains("mariadb"))
 				{
 					return true;
 				}
