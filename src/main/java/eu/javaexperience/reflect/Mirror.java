@@ -3,6 +3,7 @@ package eu.javaexperience.reflect;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -480,10 +481,10 @@ public class Mirror
 			}
 			
 			for(Field f:self_fields)
-				setAccessible(f);
+				trySetAccessible(f);
 			
 			for(Method m:self_methods)
-				setAccessible(m);
+				trySetAccessible(m);
 			
 			all_interfaces = interf;
 		}
@@ -895,10 +896,11 @@ public class Mirror
 				ps.append(")");
 				ps.append(" : ");
 				
-				f.setAccessible(true);
-				
-				Object val = f.get(obj);
-				var_dump(ps, val, lvl+1,c,disa);
+				if(trySetAccessible(f))
+				{
+					Object val = f.get(obj);
+					var_dump(ps, val, lvl+1,c,disa);
+				}
 			}
 			
 			ps.append(ls);
@@ -1026,7 +1028,20 @@ public class Mirror
 		f.setAccessible(true);
 		return f;
 	}
-
+	
+	public static boolean trySetAccessible(AccessibleObject a)
+	{
+		try
+		{
+			a.setAccessible(true);
+		}
+		catch(Throwable t)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	public static Object newInstanceOrNull(Class<?> cls)
 	{
 		try

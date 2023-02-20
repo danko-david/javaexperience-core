@@ -50,7 +50,8 @@ public class ProcessTools
 		}
 	};
 	
-	
+	//XXX: Oh boy... use the PATH enverinment variable like real `which`. TODO Test
+	@Deprecated
 	protected static final String[] PATHS = new String[]
 	{
 		"/usr/local/bin/",
@@ -70,7 +71,7 @@ public class ProcessTools
 	
 	public static String which(String prog, String... paths)
 	{
-		for(String path:PATHS)
+		for(String path:paths)
 		{
 			String file = path+prog;
 			if(new File(file).exists())
