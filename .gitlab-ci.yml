@@ -1,0 +1,8 @@
+stages:
+  - package
+
+test-and-package:
+  image: maven:3-openjdk-17
+  stage: test
+  script:
+    - mvn package
