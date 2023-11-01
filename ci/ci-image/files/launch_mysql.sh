@@ -11,8 +11,8 @@ done
 mysql << 'EOF'
 
 CREATE DATABASE test;
-CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
-GRANT ALL PRIVILEGES ON test.* TO 'test'@'localhost';
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON test.* TO 'user'@'localhost';
 FLUSH PRIVILEGES;
 
 EOF
