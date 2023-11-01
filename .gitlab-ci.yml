@@ -1,8 +1,35 @@
-stages:
-  - package
+cache:
+  paths:
+    - /cache/m2
 
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=/cache/m2/"
+  BUILD_IMAGE_VERSION: "1.0.0"
+
+stages:
+  - prepare
+  - package
+  - release
+
+# Build test image once per version
+prepare:
+  stage: prepare
+  image: docker
+  script:
+    - >
+      if [ "" = "$(docker images -q \"jvx-core_ci_image:$BUILD_IMAGE_VERSION\")" ];
+      then
+        docker build -t jvx-core_ci_image:${BUILD_IMAGE_VERSION} -f ./ci/ci-image/Dockerfile ./ci/ci-image/ ;
+      fi
+
+# package and test
 test-and-package:
-  image: maven:3-openjdk-17
+  image: jvx-core_ci_image:${BUILD_IMAGE_VERSION}
   stage: package
   script:
+    - /bin/launch_mysql.sh
     - mvn package
+  artifacts:
+    paths:
+      - target/
+    expire_in: 2d
